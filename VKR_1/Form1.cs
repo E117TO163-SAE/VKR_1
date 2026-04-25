@@ -60,7 +60,10 @@ namespace VKR_1
             }
             else if (_pvdEmbed)
             {
-                //label1.Text = "Ёмкость контейнера: " + loadedBitmap.Width * loadedBitmap.Height * (checkedRGBInput.CheckedItems.Count) + " бит";
+                label1.Text = "Ёмкость контейнера: " + PvdSteganography.GetCapacity(loadedBitmap,
+                                                       checkedRGBInput.CheckedItems.Contains("R"),
+                                                       checkedRGBInput.CheckedItems.Contains("G"),
+                                                       checkedRGBInput.CheckedItems.Contains("B")) + " байт";
             }
 
         }
@@ -217,7 +220,10 @@ namespace VKR_1
                 }
                 else if (_pvdEmbed)
                 {
-                    result = PvdSteganography.EmbedDataPvd(loadedBitmap, secretDataForEmbed);
+                    result = PvdSteganography.EmbedDataPvd(loadedBitmap, secretDataForEmbed,
+                        checkedRGBInput.CheckedItems.Contains("R"),
+                        checkedRGBInput.CheckedItems.Contains("G"),
+                        checkedRGBInput.CheckedItems.Contains("B"));
                     result.Save(pathStegoImg, System.Drawing.Imaging.ImageFormat.Png);
                     result.Dispose();
                 }
@@ -273,6 +279,13 @@ namespace VKR_1
             {
                 label1.Text = "Ёмкость контейнера: " + (loadedBitmap.Width * loadedBitmap.Height * (checkedRGBInput.CheckedItems.Count))/8 + " байт";
 
+            }
+            else if (_pvdEmbed && loadedBitmap != null)
+            {
+                label1.Text = "Ёмкость контейнера: " + PvdSteganography.GetCapacity(loadedBitmap,
+                                                       checkedRGBInput.CheckedItems.Contains("R"),
+                                                       checkedRGBInput.CheckedItems.Contains("G"),
+                                                       checkedRGBInput.CheckedItems.Contains("B")) + " байт";
             }
         }
 
@@ -369,7 +382,10 @@ namespace VKR_1
                 }
                 else if (_pvdDecode)
                 {
-                    secretDataForDecode = PvdSteganography.ExtractDataPvd(loadedBitmapForDecode);
+                    secretDataForDecode = PvdSteganography.ExtractDataPvd(loadedBitmapForDecode,
+                        checkedListBoxDecode.CheckedItems.Contains("R"),
+                        checkedListBoxDecode.CheckedItems.Contains("G"),
+                        checkedListBoxDecode.CheckedItems.Contains("B"));
                 }
 
                 string text;

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace VKR_1
@@ -16,9 +18,8 @@ namespace VKR_1
             (128, 255)
         };
 
-        public static Bitmap EmbedDataPvd(Bitmap bmp, byte[] payload)
+        public static Bitmap EmbedDataPvd(Bitmap bmp, byte[] payload, bool _red, bool _green, bool _blue)
         {
-            // payload = [4 байта длины][данные]
             byte[] lengthPrefix = BitConverter.GetBytes(payload.Length);
             if (!BitConverter.IsLittleEndian)
                 Array.Reverse(lengthPrefix);
@@ -42,39 +43,81 @@ namespace VKR_1
                     Color p1 = output.GetPixel(x, y);
                     Color p2 = output.GetPixel(x + 1, y);
 
-                    int r1 = p1.R;
-                    int r2 = p2.R;
+                    int r1 = p1.R, g1 = p1.G, b1 = p1.B;
+                    int r2 = p2.R, g2 = p2.G, b2 = p2.B;
 
-                    int d = Math.Abs(r1 - r2);
+                    if (_red)
+                    {
+                        int d = Math.Abs(r1 - r2);
 
-                    if (!TryGetRange(d, out int l, out int u))
-                        continue;
+                        if (!TryGetRange(d, out int l, out int u))
+                            continue;
 
-                    int t = (int)Math.Floor(Math.Log(u - l + 1, 2));
-                    if (t <= 0)
-                        continue;
+                        int t = (int)Math.Floor(Math.Log(u - l + 1, 2));
+                        if (t <= 0)
+                            continue;
 
-                    // читаем t бит
-                    int value = 0;
-                    for (int i = 0; i < t; i++)
-                        value = (value << 1) | GetBit(fullPayload, ref byteIndex, ref bitIndex);
+                        int value = 0;
+                        for (int i = 0; i < t; i++)
+                            value = (value << 1) | GetBit(fullPayload, ref byteIndex, ref bitIndex);
 
-                    int dNew = value + l;
+                        int dNew = value + l;
 
-                    AdjustPixelsRobust(r1, r2, dNew, out int nr1, out int nr2);
+                        AdjustPixelsRobust(r1, r2, dNew, out r1, out r2);
+                    }
+                    if (_green)
+                    {
+                        int d = Math.Abs(g1 - g2);
 
-                    Color np1 = Color.FromArgb(p1.A, nr1, p1.G, p1.B);
-                    Color np2 = Color.FromArgb(p2.A, nr2, p2.G, p2.B);
+                        if (!TryGetRange(d, out int l, out int u))
+                            continue;
 
-                    output.SetPixel(x, y, np1);
-                    output.SetPixel(x + 1, y, np2);
+                        int t = (int)Math.Floor(Math.Log(u - l + 1, 2));
+                        if (t <= 0)
+                            continue;
+
+                        int value = 0;
+                        for (int i = 0; i < t; i++)
+                            value = (value << 1) | GetBit(fullPayload, ref byteIndex, ref bitIndex);
+
+                        int dNew = value + l;
+
+                        AdjustPixelsRobust(g1, g2, dNew, out g1, out g2);
+                    }
+                    if(_blue)
+                    {
+                        int d = Math.Abs(b1 - b2);
+
+                        if (!TryGetRange(d, out int l, out int u))
+                            continue;
+
+                        int t = (int)Math.Floor(Math.Log(u - l + 1, 2));
+                        if (t <= 0)
+                            continue;
+
+                        int value = 0;
+                        for (int i = 0; i < t; i++)
+                            value = (value << 1) | GetBit(fullPayload, ref byteIndex, ref bitIndex);
+
+                        int dNew = value + l;
+
+                        AdjustPixelsRobust(b1, b2, dNew, out b1, out b2);
+                    }
+
+                    
+                    
+                    p1 = Color.FromArgb(p1.A, r1, g1, b1);
+                    p2 = Color.FromArgb(p2.A, r2, g2, b2);
+
+                    output.SetPixel(x, y, p1);
+                    output.SetPixel(x + 1, y, p2);
                 }
             }
 
             throw new ArgumentException("Изображение слишком маленькое для встраивания данных.");
         }
 
-        public static byte[] ExtractDataPvd(Bitmap bmp)
+        /*public static byte[] ExtractDataPvd(Bitmap bmp)
         {
             using (MemoryStream ms = new MemoryStream())
             {
@@ -142,6 +185,87 @@ namespace VKR_1
             }
 
             throw new Exception("Не удалось извлечь данные. Возможно, они отсутствуют или повреждены.");
+        }*/
+        public static byte[] ExtractDataPvd(Bitmap bmp, bool red, bool green, bool blue)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                int bitIndex = 0;
+                int byteIndex = 0;
+                int totalBytes = -1;
+                byte currentByte = 0;
+
+                int channelCount = (red ? 1 : 0) + (green ? 1 : 0) + (blue ? 1 : 0);
+                int maxPossibleBytes = (bmp.Width * bmp.Height * channelCount * 6) / 8;
+
+                for (int y = 0; y < bmp.Height; y++)
+                {
+                    for (int x = 0; x < bmp.Width - 1; x += 2)
+                    {
+                        Color p1 = bmp.GetPixel(x, y);
+                        Color p2 = bmp.GetPixel(x + 1, y);
+
+                        if (red && ExtractFromPair(p1.R, p2.R, ref currentByte, ref bitIndex,
+                            ref byteIndex, ref totalBytes, maxPossibleBytes, ms))
+                            return ms.ToArray();
+                        if (green && ExtractFromPair(p1.G, p2.G, ref currentByte, ref bitIndex,
+                            ref byteIndex, ref totalBytes, maxPossibleBytes, ms))
+                            return ms.ToArray();
+                        if (blue && ExtractFromPair(p1.B, p2.B, ref currentByte, ref bitIndex,
+                            ref byteIndex, ref totalBytes, maxPossibleBytes, ms))
+                            return ms.ToArray();
+                    }
+                }
+            }
+
+            throw new Exception("Не удалось извлечь данные. Возможно, они отсутствуют или повреждены.");
+        }
+
+        private static bool ExtractFromPair(int c1, int c2, ref byte currentByte, ref int bitIndex,
+                                             ref int byteIndex, ref int totalBytes, int maxPossibleBytes,
+                                             MemoryStream ms)
+        {
+            int d = Math.Abs(c1 - c2);
+            if (!TryGetRange(d, out int l, out int u))
+                return false;
+
+            int t = (int)Math.Floor(Math.Log(u - l + 1, 2));
+            if (t <= 0)
+                return false;
+
+            int value = d - l;
+
+            for (int i = t - 1; i >= 0; i--)
+            {
+                int bit = (value >> i) & 1;
+                currentByte |= (byte)(bit << (7 - bitIndex));
+                bitIndex++;
+
+                if (bitIndex == 8)
+                {
+                    ms.WriteByte(currentByte);
+                    currentByte = 0;
+                    bitIndex = 0;
+                    byteIndex++;
+
+                    if (byteIndex == 4 && totalBytes < 0)
+                    {
+                        byte[] header = ms.ToArray();
+                        if (!BitConverter.IsLittleEndian)
+                            Array.Reverse(header);
+                        totalBytes = BitConverter.ToInt32(header, 0);
+                        if (totalBytes < 0 || totalBytes > maxPossibleBytes)
+                            throw new Exception("Заголовок длины повреждён.");
+                        ms.SetLength(0);
+                        byteIndex = 0;
+                    }
+                    else if (totalBytes >= 0 && byteIndex >= totalBytes)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         // Вспомогательные
@@ -239,6 +363,57 @@ namespace VKR_1
                 nr1 = bestLow;
                 nr2 = bestHigh;
             }
+        }
+
+        
+        public static int GetCapacity(Bitmap bmp, bool red, bool green, bool blue)
+        {
+            int totalBits = 0;
+            int width = bmp.Width;
+            int height = bmp.Height;
+
+            BitmapData bmpData = bmp.LockBits(
+                new Rectangle(0, 0, width, height),
+                ImageLockMode.ReadOnly,
+                PixelFormat.Format32bppArgb
+            );
+
+            byte[] pixels = new byte[bmpData.Stride * height];
+            Marshal.Copy(bmpData.Scan0, pixels, 0, pixels.Length);
+            bmp.UnlockBits(bmpData);
+
+            int stride = bmpData.Stride;
+
+            for (int y = 0; y < height; y++)
+            {
+                int rowOffset = y * stride;
+
+                for (int x = 0; x < width - 1; x += 2)
+                {
+                    int pos1 = rowOffset + x * 4;
+                    int pos2 = rowOffset + (x + 1) * 4;
+
+                    byte b1 = pixels[pos1], g1 = pixels[pos1 + 1], r1 = pixels[pos1 + 2];
+                    byte b2 = pixels[pos2], g2 = pixels[pos2 + 1], r2 = pixels[pos2 + 2];
+
+                    if (red) totalBits += GetPairCapacity(r1, r2);
+                    if (green) totalBits += GetPairCapacity(g1, g2);
+                    if (blue) totalBits += GetPairCapacity(b1, b2);
+                }
+            }
+
+            return Math.Max(0, totalBits / 8 - 4);
+        }
+
+        private static int GetPairCapacity(int c1, int c2)
+        {
+            int d = Math.Abs(c1 - c2);
+            if (TryGetRange(d, out int l, out int u))
+            {
+                int t = (int)Math.Floor(Math.Log(u - l + 1, 2));
+                return t > 0 ? t : 0;
+            }
+            return 0;
         }
     }
 }
