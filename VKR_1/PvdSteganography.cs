@@ -8,8 +8,8 @@ namespace VKR_1
 {
     internal class PvdSteganography
     {
-        private static readonly (int L, int U)[] Ranges =
-       {
+        internal static (int L, int U)[] Ranges =
+        {
             (0, 7),
             (8, 15),
             (16, 31),

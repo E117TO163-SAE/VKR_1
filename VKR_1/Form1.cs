@@ -24,12 +24,30 @@ namespace VKR_1
         private bool _lsbDecode = false;
         private bool _pvdDecode = false;
 
-        private int countColorChannel = 0;
+        private bool _embed = true;
+        private bool _decode = false;
+
         public Form1()
         {
             InitializeComponent();
             buttonSaveDecode.Visible = false;
             buttonSaveDecode.Enabled = false;
+            LoadRangesToGrid();
+        }
+        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (tabControl1.SelectedTab == tabPage1)
+            {
+                _embed = true;
+                _decode = false;
+                LoadRangesToGrid();
+            }
+            else if (tabControl1.SelectedTab == tabPage2)
+            {
+                _embed = false;
+                _decode = true;
+                LoadRangesToGrid();
+            }
         }
 
         //
@@ -107,6 +125,13 @@ namespace VKR_1
                     "затем на его место записывается бит скрываемого сообщения (операцией OR с 0 или 1). " +
                     "Извлечение сообщения происходит аналогично: из каждого байта выделяется младший бит, и из " +
                     "полученной битовой последовательности собирается исходное сообщение." + Environment.NewLine);
+
+                tableLayoutPanel1.Enabled = false;
+                tableLayoutPanel1.Visible = false;
+
+                checkedListBoxBitEmbed.Visible = true;
+                checkedListBoxBitEmbed.Enabled = true;
+
             }
             else if (comboBoxStegInput.Text == "PVD")
             {
@@ -123,6 +148,12 @@ namespace VKR_1
                     "Затем эти биты встраиваются в младшие биты соответствующих пикселей. Извлечение сообщения происходит аналогично: " +
                     "анализируются разницы между пикселями, определяется количество бит для извлечения, и из этих бит восстанавливается " +
                     "исходное сообщение." + Environment.NewLine);
+
+                checkedListBoxBitEmbed.Visible = false;
+                checkedListBoxBitEmbed.Enabled = false;
+
+                tableLayoutPanel1.Enabled = true;
+                tableLayoutPanel1.Visible = true;
             }
         }
 
@@ -277,7 +308,7 @@ namespace VKR_1
         {
             if (_lsbEmbed && loadedBitmap != null)
             {
-                label1.Text = "Ёмкость контейнера: " + (loadedBitmap.Width * loadedBitmap.Height * (checkedRGBInput.CheckedItems.Count))/8 + " байт";
+                label1.Text = "Ёмкость контейнера: " + (loadedBitmap.Width * loadedBitmap.Height * (checkedRGBInput.CheckedItems.Count)) / 8 + " байт";
 
             }
             else if (_pvdEmbed && loadedBitmap != null)
@@ -311,6 +342,13 @@ namespace VKR_1
                     "затем на его место записывается бит скрываемого сообщения (операцией OR с 0 или 1). Извлечение сообщения происходит аналогично: из каждого байта выделяется младший бит, и из " +
                     "полученной битовой последовательности собирается исходное сообщение." + Environment.NewLine);
 
+
+                tableLayoutPanel3.Enabled = false;
+                tableLayoutPanel3.Visible = false;
+
+                checkedListBoxBitDecode.Visible = true;
+                checkedListBoxBitDecode.Enabled = true;
+
             }
             else if (comboBoxDecode.Text == "PVD")
             {
@@ -331,6 +369,13 @@ namespace VKR_1
                     "в соответствии с таблицей диапазонов квантования определяются нижняя и верхняя границы [lower_i, upper_i] региона R_i и количество встраиваемых бит " +
                     "t = floor[ log2(upper_i - lower_i + 1) ]. Последовательность бит сообщения длиной t преобразуется в десятичное значение t_d, после чего " +
                     "вычисляется новое значение d'_i = t_d  + lower_i.");
+
+
+                tableLayoutPanel3.Enabled = true;
+                tableLayoutPanel3.Visible = true;
+
+                checkedListBoxBitEmbed.Visible = false;
+                checkedListBoxBitEmbed.Enabled = false;
 
             }
         }
@@ -396,7 +441,7 @@ namespace VKR_1
                 if (text != null)
                 {
                     textBoxDecode.Text = "Извлечён текст: " + "\"" + text + "\"";
-                    textBoxLogDecode.AppendText("Извлечён текст: " + "\"" + text + "\"" + Environment.NewLine);
+                    textBoxLogDecode.AppendText(Environment.NewLine + "Извлечён текст: " + "\"" + text + "\"" + Environment.NewLine);
                     buttonSaveDecode.Visible = false;
                     buttonSaveDecode.Enabled = false;
                 }
@@ -405,7 +450,7 @@ namespace VKR_1
                     buttonSaveDecode.Visible = true;
                     buttonSaveDecode.Enabled = true;
                     textBoxDecode.Text = "Извлечён файл: " + fileName;
-                    textBoxLogDecode.AppendText("Извлечён файл: " + fileName + Environment.NewLine);
+                    textBoxLogDecode.AppendText(Environment.NewLine + "Извлечён файл: " + fileName + Environment.NewLine);
                     buttonSaveDecode.Tag = new Tuple<string, byte[]>(fileName, fileBytes);
                 }
 
@@ -431,6 +476,305 @@ namespace VKR_1
 
         }
 
-        
+        //
+        //
+        //
+        //
+        //
+        //
+        //
+
+        private void LoadRangesToGrid()
+        {
+            if (_embed)
+                dataGridView1.Rows.Clear();
+            else if (_decode)
+                dataGridView2.Rows.Clear();
+
+            foreach (var (L, U) in PvdSteganography.Ranges)
+            {
+                int rowIndex = -1;
+                if (_embed)
+                    rowIndex = dataGridView1.Rows.Add(L, U);
+                else if (_decode)
+                    rowIndex = dataGridView2.Rows.Add(L, U);
+                UpdateTRow(rowIndex);
+            }
+        }
+
+        private void UpdateTRow(int rowIndex)
+        {
+            if (rowIndex < 0 || (_embed && rowIndex >= dataGridView1.Rows.Count) || (_decode && rowIndex >= dataGridView2.Rows.Count)) return;
+
+            var row = _embed ? dataGridView1.Rows[rowIndex] : dataGridView2.Rows[rowIndex];
+            var lStr = row.Cells[0].Value?.ToString();
+            var uStr = row.Cells[1].Value?.ToString();
+
+            if (int.TryParse(lStr, out int L) && int.TryParse(uStr, out int U) && L <= U)
+            {
+                int t = (int)Math.Floor(Math.Log(U - L + 1, 2));
+                row.Cells[2].Value = t;
+            }
+            else
+            {
+                row.Cells[2].Value = null;
+            }
+        }
+
+        private bool TryParseAndValidate(out (int L, int U)[] ranges, out string error)
+        {
+            ranges = null;
+
+            if ((_embed && dataGridView1.Rows.Count == 0) || (_decode && dataGridView2.Rows.Count == 0))
+            {
+                error = "Нет диапазонов.";
+                return false;
+            }
+
+            var list = new List<(int L, int U)>();
+
+            for (int i = 0; i < (_embed ? dataGridView1.Rows.Count : dataGridView2.Rows.Count); i++)
+            {
+                var row = _embed ? dataGridView1.Rows[i] : dataGridView2.Rows[i];
+
+                if (!int.TryParse(row.Cells[0].Value?.ToString(), out int L) ||
+                    !int.TryParse(row.Cells[1].Value?.ToString(), out int U))
+                {
+                    error = $"Строка {i + 1}: введите целые числа.";
+                    return false;
+                }
+
+                if (L < 0 || U > 255 || L > U)
+                {
+                    error = $"Строка {i + 1}: некорректный диапазон.";
+                    return false;
+                }
+
+                list.Add((L, U));
+            }
+
+            if (list[0].L != 0)
+            {
+                error = "Первый диапазон должен начинаться с 0.";
+                return false;
+            }
+
+            if (list[^1].U != 255)
+            {
+                error = "Последний диапазон должен заканчиваться на 255.";
+                return false;
+            }
+
+            for (int i = 0; i < list.Count - 1; i++)
+            {
+                if (list[i].U + 1 != list[i + 1].L)
+                {
+                    error = $"Разрыв между диапазонами {i + 1} и {i + 2}.";
+                    return false;
+                }
+            }
+
+            ranges = list.ToArray();
+            error = null;
+            return true;
+        }
+
+        private void dataGridView1_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        {
+            for (int i = e.RowIndex; i < e.RowIndex + e.RowCount; i++)
+                UpdateTRow(i);
+        }
+
+        private void buttonDelete_Click(object sender, EventArgs e)
+        {
+            if (dataGridView1.CurrentRow != null && dataGridView1.Rows.Count > 1)
+                dataGridView1.Rows.RemoveAt(dataGridView1.CurrentRow.Index);
+        }
+
+        private void buttonAdd_Click(object sender, EventArgs e)
+        {
+            dataGridView1.Rows.Add(0, 0);
+        }
+
+        private void buttonApply_Click(object sender, EventArgs e)
+        {
+            if (TryParseAndValidate(out var ranges, out string error))
+            {
+                PvdSteganography.Ranges = ranges;
+                MessageBox.Show("Диапазоны обновлены.", "Успех",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show(error, "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            /*if (e.ColumnIndex == 0 || e.ColumnIndex == 1) 
+                UpdateTRow(e.RowIndex);*/
+
+            if (e.ColumnIndex == 1) // U
+            {
+                UpdateTRow(e.RowIndex);
+                // Обновить L у следующей строки
+                if (e.RowIndex + 1 < dataGridView1.Rows.Count)
+                {
+                    var row = dataGridView1.Rows[e.RowIndex];
+                    if (int.TryParse(row.Cells[1].Value?.ToString(), out int U))
+                        dataGridView1.Rows[e.RowIndex + 1].Cells[0].Value = U + 1;
+                }
+            }
+        }
+
+        private void buttonUp_Click(object sender, EventArgs e)
+        {
+            if (dataGridView1.CurrentRow == null || dataGridView1.CurrentRow.Index == 0)
+                return;
+
+            int index = dataGridView1.CurrentRow.Index;
+
+            // Клонируем строку и копируем данные
+            DataGridViewRow row = (DataGridViewRow)dataGridView1.Rows[index].Clone();
+            for (int i = 0; i < dataGridView1.Rows[index].Cells.Count; i++)
+            {
+                row.Cells[i].Value = dataGridView1.Rows[index].Cells[i].Value;
+            }
+
+            // Удаляем и вставляем
+            dataGridView1.Rows.RemoveAt(index);
+            dataGridView1.Rows.Insert(index - 1, row);
+
+            // Выделяем перемещенную строку
+            dataGridView1.ClearSelection();
+            dataGridView1.Rows[index - 1].Selected = true;
+            dataGridView1.CurrentCell = dataGridView1.Rows[index - 1].Cells[0];
+        }
+
+        private void buttonDown_Click(object sender, EventArgs e)
+        {
+            if (dataGridView1.CurrentRow == null ||
+                dataGridView1.CurrentRow.Index == dataGridView1.Rows.Count - 1)
+                return;
+
+            int index = dataGridView1.CurrentRow.Index;
+
+            // Клонируем строку и копируем данные
+            DataGridViewRow row = (DataGridViewRow)dataGridView1.Rows[index].Clone();
+            for (int i = 0; i < dataGridView1.Rows[index].Cells.Count; i++)
+            {
+                row.Cells[i].Value = dataGridView1.Rows[index].Cells[i].Value;
+            }
+
+            // Удаляем и вставляем
+            dataGridView1.Rows.RemoveAt(index);
+            dataGridView1.Rows.Insert(index + 1, row);
+
+            // Выделяем перемещенную строку
+            dataGridView1.ClearSelection();
+            dataGridView1.Rows[index + 1].Selected = true;
+            dataGridView1.CurrentCell = dataGridView1.Rows[index + 1].Cells[0];
+        }
+
+        private void dataGridView2_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        {
+            for (int i = e.RowIndex; i < e.RowIndex + e.RowCount; i++)
+                UpdateTRow(i);
+        }
+
+        private void dataGridView2_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == 1) // U
+            {
+                UpdateTRow(e.RowIndex);
+                // Обновить L у следующей строки
+                if (e.RowIndex + 1 < dataGridView2.Rows.Count)
+                {
+                    var row = dataGridView2.Rows[e.RowIndex];
+                    if (int.TryParse(row.Cells[1].Value?.ToString(), out int U))
+                        dataGridView2.Rows[e.RowIndex + 1].Cells[0].Value = U + 1;
+                }
+            }
+
+        }
+
+        private void buttonApply1_Click(object sender, EventArgs e)
+        {
+            if (TryParseAndValidate(out var ranges, out string error))
+            {
+                PvdSteganography.Ranges = ranges;
+                MessageBox.Show("Диапазоны обновлены.", "Успех",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show(error, "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void buttonDelete1_Click(object sender, EventArgs e)
+        {
+            if (dataGridView2.CurrentRow != null && dataGridView2.Rows.Count > 1)
+                dataGridView2.Rows.RemoveAt(dataGridView2.CurrentRow.Index);
+
+        }
+
+        private void buttonAdd1_Click(object sender, EventArgs e)
+        {
+            dataGridView2.Rows.Add(0, 0);
+        }
+
+        private void buttonDown1_Click(object sender, EventArgs e)
+        {
+            if (dataGridView2.CurrentRow == null ||
+                dataGridView2.CurrentRow.Index == dataGridView2.Rows.Count - 1)
+                return;
+
+            int index = dataGridView2.CurrentRow.Index;
+            // Клонируем строку и копируем данные
+            DataGridViewRow row = (DataGridViewRow)dataGridView2.Rows[index].Clone();
+            for (int i = 0; i < dataGridView2.Rows[index].Cells.Count; i++)
+            {
+                row.Cells[i].Value = dataGridView2.Rows[index].Cells[i].Value;
+            }
+
+            // Удаляем и вставляем
+            dataGridView2.Rows.RemoveAt(index);
+            dataGridView2.Rows.Insert(index + 1, row);
+
+            // Выделяем перемещенную строку
+            dataGridView2.ClearSelection();
+            dataGridView2.Rows[index + 1].Selected = true;
+            dataGridView2.CurrentCell = dataGridView2.Rows[index + 1].Cells[0];
+        }
+
+        private void buttonUp1_Click(object sender, EventArgs e)
+        {
+            if (dataGridView2.CurrentRow == null || dataGridView2.CurrentRow.Index == 0)
+                return;
+
+            int index = dataGridView2.CurrentRow.Index;
+
+            // Клонируем строку и копируем данные
+            DataGridViewRow row = (DataGridViewRow)dataGridView2.Rows[index].Clone();
+            for (int i = 0; i < dataGridView2.Rows[index].Cells.Count; i++)
+            {
+                row.Cells[i].Value = dataGridView2.Rows[index].Cells[i].Value;
+            }
+
+            // Удаляем и вставляем
+            dataGridView2.Rows.RemoveAt(index);
+            dataGridView2.Rows.Insert(index - 1, row);
+
+            // Выделяем перемещенную строку
+            dataGridView2.ClearSelection();
+            dataGridView2.Rows[index - 1].Selected = true;
+            dataGridView2.CurrentCell = dataGridView2.Rows[index - 1].Cells[0];
+
+
+        }
     }
 }
