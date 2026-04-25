@@ -303,21 +303,13 @@ namespace VKR_1
             return bit;
         }
 
-        /// <summary>
-        /// Робастная коррекция пары: находит такие nr1,nr2 (0..255),
-        /// что |nr1-nr2| = dNew, и изменение минимально.
-        /// Гарантированно находит решение для dNew в [0..255].
-        /// </summary>
+        // Робастная коррекция пары: находит такие nr1,nr2 (0..255),
+        // что |nr1-nr2| = dNew, и изменение минимально.
+        // Гарантированно находит решение для dNew в [0..255].
         private static void AdjustPixelsRobust(int r1, int r2, int dNew, out int nr1, out int nr2)
         {
             if (dNew < 0 || dNew > 255)
                 throw new ArgumentOutOfRangeException(nameof(dNew));
-
-            /*
-            bool r1IsHigh = r1 >= r2;
-            int high = r1IsHigh ? r1 : r2;
-            int low = r1IsHigh ? r2 : r1;
-            */
 
             int high, low;
 
