@@ -22,9 +22,19 @@ namespace NIRSteg_2
             byte[] fullPayload = new byte[4 + payloadLength];
             Array.Copy(lengthPrefix, fullPayload, 4);
             Array.Copy(payload, 0, fullPayload, 4, payloadLength);
+            int k = 0;
+            if (_red) { 
+                k++;
+            }
+            if (_green) { 
+                k++;
+            }
+            if (_blue) { 
+                k++;
+            }
 
             int requiredBits = fullPayload.Length * 8;
-            int capacity = bmp.Width * bmp.Height;
+            int capacity = bmp.Width * bmp.Height * k;
             if (requiredBits > capacity)
                 throw new ArgumentException("Изображение слишком маленькое для встраивания данных.");
 

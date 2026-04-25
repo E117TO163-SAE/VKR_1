@@ -23,6 +23,8 @@ namespace VKR_1
         private bool _pvdEmbed = false;
         private bool _lsbDecode = false;
         private bool _pvdDecode = false;
+
+        private int countColorChannel = 0;
         public Form1()
         {
             InitializeComponent();
@@ -52,6 +54,15 @@ namespace VKR_1
             pictureBox1.Image = null;
             pictureBox1.Image = Image.FromFile(ofd.FileName);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            if (_lsbEmbed)
+            {
+                label1.Text = "Ёмкость контейнера: " + loadedBitmap.Width * loadedBitmap.Height * (checkedRGBInput.CheckedItems.Count) + " байт";
+            }
+            else if (_pvdEmbed)
+            {
+                //label1.Text = "Ёмкость контейнера: " + loadedBitmap.Width * loadedBitmap.Height * (checkedRGBInput.CheckedItems.Count) + " бит";
+            }
+
         }
 
         private void tabControl2_SelectedIndexChanged(object sender, EventArgs e)
@@ -138,7 +149,7 @@ namespace VKR_1
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (checkedRGBInput.CheckedItems.Count == 0)
+            if (_lsbEmbed && checkedRGBInput.CheckedItems.Count == 0)
             {
                 MessageBox.Show("Выберите хотя бы один цветовой канал", "Ошибка",
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -206,7 +217,9 @@ namespace VKR_1
                 }
                 else if (_pvdEmbed)
                 {
-
+                    result = PvdSteganography.EmbedDataPvd(loadedBitmap, secretDataForEmbed);
+                    result.Save(pathStegoImg, System.Drawing.Imaging.ImageFormat.Png);
+                    result.Dispose();
                 }
 
                 MessageBox.Show("Успешно сохранено!", "Готово",
@@ -248,6 +261,21 @@ namespace VKR_1
             }
         }
 
+        private void buttonForMoreInfo_Click(object sender, EventArgs e)
+        {
+            FormInfo form2 = new FormInfo();
+            form2.Show();
+        }
+
+        private void checkedRGBInput_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_lsbEmbed && loadedBitmap != null)
+            {
+                label1.Text = "Ёмкость контейнера: " + (loadedBitmap.Width * loadedBitmap.Height * (checkedRGBInput.CheckedItems.Count))/8 + " байт";
+
+            }
+        }
+
         //
         //
         //
@@ -284,12 +312,12 @@ namespace VKR_1
                     "Для каждого блока вычисляется разница между значениями соседних пикселей. В зависимости от величины этой " +
                     "разницы определяется, сколько бит скрываемого сообщения можно встроить в эти пиксели: чем больше разница, " +
                     "тем больше бит можно встроить. Затем эти биты встраиваются в младшие биты соответствующих пикселей. " +
-                    "Извлечение сообщения происходит аналогично: анализируются разницы между пикселями, определяется количество " + Environment.NewLine  +
+                    "Извлечение сообщения происходит аналогично: анализируются разницы между пикселями, определяется количество " + Environment.NewLine +
                     "Суть классического метода PVD заключается в последовательной модификации значений яркости двух соседних пикселей P_i и P_(i+1), " +
                     "для которых определяется абсолютная разность d_i = |P_i - P_(i+1)|, где d_i в диапазоне [0, 255]. На основании полученного значения d_i" +
                     "в соответствии с таблицей диапазонов квантования определяются нижняя и верхняя границы [lower_i, upper_i] региона R_i и количество встраиваемых бит " +
                     "t = floor[ log2(upper_i - lower_i + 1) ]. Последовательность бит сообщения длиной t преобразуется в десятичное значение t_d, после чего " +
-                    "вычисляется новое значение d'_i = t_d  + lower_i." );
+                    "вычисляется новое значение d'_i = t_d  + lower_i.");
 
             }
         }
@@ -323,7 +351,7 @@ namespace VKR_1
                                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (checkedListBoxDecode.CheckedItems.Count == 0)
+            if (_lsbDecode && checkedListBoxDecode.CheckedItems.Count == 0)
             {
                 MessageBox.Show("Выберите хотя бы один цветовой канал", "Ошибка",
                                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -341,7 +369,7 @@ namespace VKR_1
                 }
                 else if (_pvdDecode)
                 {
-
+                    secretDataForDecode = PvdSteganography.ExtractDataPvd(loadedBitmapForDecode);
                 }
 
                 string text;
@@ -387,10 +415,6 @@ namespace VKR_1
 
         }
 
-        private void buttonForMoreInfo_Click(object sender, EventArgs e)
-        {
-            FormInfo form2 = new FormInfo();
-            form2.Show();
-        }
+        
     }
 }

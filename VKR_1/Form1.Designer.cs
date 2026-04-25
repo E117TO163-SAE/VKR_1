@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             tabControl1 = new TabControl();
             tabPage1 = new TabPage();
             groupBox13 = new GroupBox();
@@ -77,6 +78,7 @@
             groupBox11 = new GroupBox();
             button1 = new Button();
             button2 = new Button();
+            toolTip1 = new ToolTip(components);
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
             groupBox13.SuspendLayout();
@@ -108,10 +110,11 @@
             tabControl1.Controls.Add(tabPage1);
             tabControl1.Controls.Add(tabPage2);
             tabControl1.Controls.Add(tabPage3);
-            tabControl1.Location = new Point(12, 12);
+            tabControl1.Dock = DockStyle.Fill;
+            tabControl1.Location = new Point(0, 0);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(1874, 1000);
+            tabControl1.Size = new Size(1898, 1024);
             tabControl1.TabIndex = 0;
             // 
             // tabPage1
@@ -127,7 +130,7 @@
             tabPage1.Location = new Point(4, 34);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(1866, 962);
+            tabPage1.Size = new Size(1890, 986);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Встраивание";
             tabPage1.UseVisualStyleBackColor = true;
@@ -196,18 +199,19 @@
             label2.AutoSize = true;
             label2.Location = new Point(16, 74);
             label2.Name = "label2";
-            label2.Size = new Size(227, 25);
+            label2.Size = new Size(397, 25);
             label2.TabIndex = 1;
-            label2.Text = "Объём секретных данных:";
+            label2.Text = "Объём секретных данных:                                  ";
             // 
             // label1
             // 
             label1.AutoSize = true;
             label1.Location = new Point(16, 38);
             label1.Name = "label1";
-            label1.Size = new Size(173, 25);
+            label1.Size = new Size(397, 25);
             label1.TabIndex = 0;
-            label1.Text = "Ёмкость контейнер:";
+            label1.Text = "Ёмкость контейнера:                                           ";
+            toolTip1.SetToolTip(label1, "Чтобы увидеть ёмкость выбранного изображения-контейнера,\r\nтребуется выбрать:\r\n1 Изображение-контейнер;\r\n2 Алгоритм;\r\n3 Хотя бы один цветовой канал.");
             // 
             // groupBox5
             // 
@@ -265,6 +269,7 @@
             checkedRGBInput.Name = "checkedRGBInput";
             checkedRGBInput.Size = new Size(62, 88);
             checkedRGBInput.TabIndex = 1;
+            checkedRGBInput.SelectedIndexChanged += checkedRGBInput_SelectedIndexChanged;
             // 
             // comboBoxStegInput
             // 
@@ -390,7 +395,7 @@
             tabPage2.Location = new Point(4, 34);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new Padding(3);
-            tabPage2.Size = new Size(1866, 962);
+            tabPage2.Size = new Size(1890, 986);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Извлечене";
             tabPage2.UseVisualStyleBackColor = true;
@@ -550,7 +555,7 @@
             tabPage3.Controls.Add(groupBox11);
             tabPage3.Location = new Point(4, 34);
             tabPage3.Name = "tabPage3";
-            tabPage3.Size = new Size(1866, 962);
+            tabPage3.Size = new Size(1890, 986);
             tabPage3.TabIndex = 2;
             tabPage3.Text = "Анализ";
             tabPage3.UseVisualStyleBackColor = true;
@@ -611,6 +616,7 @@
             ClientSize = new Size(1898, 1024);
             Controls.Add(tabControl1);
             Name = "Form1";
+            Text = "StegoTeacher";
             tabControl1.ResumeLayout(false);
             tabPage1.ResumeLayout(false);
             groupBox13.ResumeLayout(false);
@@ -699,5 +705,6 @@
         private PictureBox pictureBox1;
         private Button buttonForMoreInfo1;
         private Button button3;
+        private ToolTip toolTip1;
     }
 }
