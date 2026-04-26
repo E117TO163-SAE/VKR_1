@@ -126,7 +126,6 @@ namespace VKR_1
                 int totalBytes = -1;
                 byte currentByte = 0;
 
-                // грубая верхняя граница, чтобы отловить мусорный заголовок
                 int maxPossibleBytes = (bmp.Width * bmp.Height * 3) / 8;
 
                 for (int y = 0; y < bmp.Height; y++)
@@ -303,9 +302,8 @@ namespace VKR_1
             return bit;
         }
 
-        // Робастная коррекция пары: находит такие nr1,nr2 (0..255),
-        // что |nr1-nr2| = dNew, и изменение минимально.
-        // Гарантированно находит решение для dNew в [0..255].
+        // Коррекция пары: находит такие nr1,nr2 (0..255),
+        // что |nr1-nr2| = dNew, и изменение минимально
         private static void AdjustPixelsRobust(int r1, int r2, int dNew, out int nr1, out int nr2)
         {
             if (dNew < 0 || dNew > 255)

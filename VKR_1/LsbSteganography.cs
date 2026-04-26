@@ -70,70 +70,7 @@ namespace NIRSteg_2
         }
 
 
-        /*public static byte[] ExtractData(Bitmap bmp, bool _red, bool _green, bool _blue)
-        {
-            MemoryStream ms = new MemoryStream();
-            int byteVal = 0, bitCount = 0;
-            int dataLength = -1;
-            int bytesRead = 0;
 
-            for (int y = 0; y < bmp.Height; y++)
-            {
-                for (int x = 0; x < bmp.Width; x++)
-                {
-                    Color pixel = bmp.GetPixel(x, y);
-                    int lsb = 0;
-                    
-                    if (_red)
-                    {
-                        lsb = pixel.R & 1;
-
-                        byteVal = (byteVal << 1) | lsb;
-                        bitCount++;
-                    }
-                    if (_green)
-                    {
-                        lsb = pixel.G & 1;
-
-                        byteVal = (byteVal << 1) | lsb;
-                        bitCount++;
-                    }
-                    if (_blue)
-                    {
-                        lsb = pixel.B & 1;
-
-                        byteVal = (byteVal << 1) | lsb;
-                        bitCount++;
-                    }
-                    
-
-                    if (bitCount == 8)
-                    {
-                        ms.WriteByte((byte)byteVal);
-                        bitCount = 0;
-                        byteVal = 0;
-                        bytesRead++;
-
-                        if (dataLength == -1 && bytesRead == 4)
-                        {
-                            byte[] header = ms.ToArray();
-                            if (!BitConverter.IsLittleEndian)
-                                Array.Reverse(header);
-                            dataLength = BitConverter.ToInt32(header, 0);
-                            ms = new MemoryStream(); // очистить, начнём записывать полезную нагрузку
-                            bytesRead = 0;
-                        }
-
-                        if (dataLength != -1 && bytesRead >= dataLength)
-                            return ms.ToArray();
-                    }
-                    
-                
-                }
-            }
-
-            throw new Exception("Не удалось извлечь данные. Возможно, они отсутствуют или повреждены.");
-        }*/
         public static byte[] ExtractData(Bitmap bmp, bool _red, bool _green, bool _blue)
         {
             MemoryStream ms = new MemoryStream();

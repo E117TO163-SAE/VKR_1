@@ -10,6 +10,7 @@ namespace VKR_1
         private string decodeImagePath = null;
         private Bitmap loadedBitmap = null;
         private Bitmap loadedBitmapForDecode = null;
+        private Bitmap analysisPict = null;
 
         private string pathStegoImg = null;
 
@@ -26,6 +27,8 @@ namespace VKR_1
 
         private bool _embed = true;
         private bool _decode = false;
+
+
 
         public Form1()
         {
@@ -47,6 +50,16 @@ namespace VKR_1
                 _embed = false;
                 _decode = true;
                 LoadRangesToGrid();
+            }
+            else if (tabControl1.SelectedTab == tabPage3)
+            {
+                checkedListBoxRGBAnalysis.SetItemChecked(0, true);
+
+                for (int i = 0; i < checkedListBoxBitAnalysis.Items.Count; i++)
+                {
+                    checkedListBoxBitAnalysis.SetItemChecked(i, true);
+                }
+
             }
         }
 
@@ -74,7 +87,12 @@ namespace VKR_1
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             if (_lsbEmbed)
             {
-                label1.Text = "Ёмкость контейнера: " + loadedBitmap.Width * loadedBitmap.Height * (checkedRGBInput.CheckedItems.Count) + " байт";
+                List<int> selectedBits = new List<int>();
+                foreach (var item in checkedListBoxBitEmbed.CheckedItems)
+                {
+                    selectedBits.Add(int.Parse(item.ToString()));
+                }
+                label1.Text = "Ёмкость контейнера: " + (loadedBitmap.Width * loadedBitmap.Height * (checkedRGBInput.CheckedItems.Count) * selectedBits.Count) / 8 + " байт";
             }
             else if (_pvdEmbed)
             {
@@ -242,10 +260,18 @@ namespace VKR_1
 
                 if (_lsbEmbed)
                 {
-                    result = LsbSteganography.EmbedData(loadedBitmap, secretDataForEmbed,
+
+                    List<int> selectedBits = new List<int>();
+                    foreach (var item in checkedListBoxBitEmbed.CheckedItems)
+                    {
+                        selectedBits.Add(int.Parse(item.ToString()));
+                    }
+
+                    result = LsbSteganography2.EmbedData(loadedBitmap, secretDataForEmbed,
                         checkedRGBInput.CheckedItems.Contains("R"),
                         checkedRGBInput.CheckedItems.Contains("G"),
-                        checkedRGBInput.CheckedItems.Contains("B"));
+                        checkedRGBInput.CheckedItems.Contains("B"),
+                        selectedBits);
                     result.Save(pathStegoImg, System.Drawing.Imaging.ImageFormat.Png);
                     result.Dispose();
                 }
@@ -308,7 +334,12 @@ namespace VKR_1
         {
             if (_lsbEmbed && loadedBitmap != null)
             {
-                label1.Text = "Ёмкость контейнера: " + (loadedBitmap.Width * loadedBitmap.Height * (checkedRGBInput.CheckedItems.Count)) / 8 + " байт";
+                List<int> selectedBits = new List<int>();
+                foreach (var item in checkedListBoxBitEmbed.CheckedItems)
+                {
+                    selectedBits.Add(int.Parse(item.ToString()));
+                }
+                label1.Text = "Ёмкость контейнера: " + (loadedBitmap.Width * loadedBitmap.Height * (checkedRGBInput.CheckedItems.Count) * selectedBits.Count) / 8 + " байт";
 
             }
             else if (_pvdEmbed && loadedBitmap != null)
@@ -319,6 +350,20 @@ namespace VKR_1
                                                        checkedRGBInput.CheckedItems.Contains("B")) + " байт";
             }
         }
+
+        private void checkedListBoxBitEmbed_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_lsbEmbed && loadedBitmap != null)
+            {
+                List<int> selectedBits = new List<int>();
+                foreach (var item in checkedListBoxBitEmbed.CheckedItems)
+                {
+                    selectedBits.Add(int.Parse(item.ToString()));
+                }
+                label1.Text = "Ёмкость контейнера: " + (loadedBitmap.Width * loadedBitmap.Height * (checkedRGBInput.CheckedItems.Count) * selectedBits.Count) / 8 + " байт";
+            }
+        }
+
 
         //
         //
@@ -420,10 +465,17 @@ namespace VKR_1
             {
                 if (_lsbDecode)
                 {
-                    secretDataForDecode = LsbSteganography.ExtractData(loadedBitmapForDecode,
+                    List<int> selectedBits = new List<int>();
+                    foreach (var item in checkedListBoxBitDecode.CheckedItems)
+                    {
+                        selectedBits.Add(int.Parse(item.ToString()));
+                    }
+
+                    secretDataForDecode = LsbSteganography2.ExtractData(loadedBitmapForDecode,
                         checkedListBoxDecode.CheckedItems.Contains("R"),
                         checkedListBoxDecode.CheckedItems.Contains("G"),
-                        checkedListBoxDecode.CheckedItems.Contains("B"));
+                        checkedListBoxDecode.CheckedItems.Contains("B"),
+                        selectedBits);
                 }
                 else if (_pvdDecode)
                 {
@@ -578,6 +630,10 @@ namespace VKR_1
             error = null;
             return true;
         }
+        
+        //
+        // Работа с таблицами для PVD
+        //
 
         private void dataGridView1_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
@@ -775,6 +831,83 @@ namespace VKR_1
             dataGridView2.CurrentCell = dataGridView2.Rows[index - 1].Cells[0];
 
 
+        }
+
+        //
+        //
+        // Анализы
+        //
+        //
+
+        private void buttonConteinerAnalysis_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "PNG files|*.png|TIFF files|*.tiff";
+            if (ofd.ShowDialog() != DialogResult.OK) return;
+            string analysisImagePath = ofd.FileName;
+            analysisPict = new Bitmap(analysisImagePath);
+
+            textBoxConteinerAnalysis.Text = Path.GetFileName(analysisImagePath);
+
+
+            pictureBox4.Image = null;
+            pictureBox4.Image = Image.FromFile(ofd.FileName);
+            pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
+
+
+            bitPlan();
+        }
+
+        private void bitPlan()
+        {
+            pictureBox3.Image = null;
+            bool useGrayscale = checkedListBoxRGBAnalysis.GetItemChecked(3);
+            bool useRed = checkedListBoxRGBAnalysis.GetItemChecked(0);
+            bool useGreen = checkedListBoxRGBAnalysis.GetItemChecked(1);
+            bool useBlue = checkedListBoxRGBAnalysis.GetItemChecked(2);
+
+            bool[] selectedBits = new bool[8];
+            for (int i = 0; i < 8; i++)
+            {
+                selectedBits[i] = checkedListBoxBitAnalysis.GetItemChecked(i);
+            }
+
+
+            pictureBox3.Image = BitPlan.ApplyBitFilter(analysisPict, useGrayscale, useRed, useGreen, useBlue, selectedBits);
+            pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
+        }
+
+
+        private void checkedListBoxRGBAnalysis_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (e.NewValue == CheckState.Unchecked)
+            {
+                if (checkedListBoxRGBAnalysis.CheckedItems.Count == 1 && checkedListBoxRGBAnalysis.CheckedItems.Contains(checkedListBoxRGBAnalysis.Items[e.Index]))
+                {
+                    e.NewValue = CheckState.Checked;
+                }
+            }
+        }
+
+        private void checkedListBoxBitAnalysis_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (e.NewValue == CheckState.Unchecked)
+            {
+                if (checkedListBoxBitAnalysis.CheckedItems.Count == 1 && checkedListBoxBitAnalysis.CheckedItems.Contains(checkedListBoxBitAnalysis.Items[e.Index]))
+                {
+                    e.NewValue = CheckState.Checked;
+                }
+            }
+        }
+
+        private void checkedListBoxRGBAnalysis_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            bitPlan();
+        }
+
+        private void checkedListBoxBitAnalysis_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            bitPlan();
         }
     }
 }

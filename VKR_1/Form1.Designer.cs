@@ -100,11 +100,36 @@
             checkedListBoxDecode = new CheckedListBox();
             comboBoxDecode = new ComboBox();
             tabPage3 = new TabPage();
-            groupBox12 = new GroupBox();
-            comboBox1 = new ComboBox();
-            groupBox11 = new GroupBox();
-            button1 = new Button();
+            groupBox17 = new GroupBox();
+            tableLayoutPanel6 = new TableLayoutPanel();
+            textBox2 = new TextBox();
             button2 = new Button();
+            groupBox15 = new GroupBox();
+            pictureBox3 = new PictureBox();
+            groupBox16 = new GroupBox();
+            pictureBox4 = new PictureBox();
+            groupBox12 = new GroupBox();
+            textBoxConteinerAnalysis = new TextBox();
+            buttonConteinerAnalysis = new Button();
+            groupBox11 = new GroupBox();
+            tabControl4 = new TabControl();
+            tabPage8 = new TabPage();
+            checkedListBoxBitAnalysis = new CheckedListBox();
+            checkedListBoxRGBAnalysis = new CheckedListBox();
+            tabPage9 = new TabPage();
+            comboBox1 = new ComboBox();
+            tableLayoutPanel5 = new TableLayoutPanel();
+            panel5 = new Panel();
+            button4 = new Button();
+            button5 = new Button();
+            panel6 = new Panel();
+            button6 = new Button();
+            button7 = new Button();
+            button8 = new Button();
+            dataGridView3 = new DataGridView();
+            dataGridViewTextBoxColumn4 = new DataGridViewTextBoxColumn();
+            dataGridViewTextBoxColumn5 = new DataGridViewTextBoxColumn();
+            dataGridViewTextBoxColumn6 = new DataGridViewTextBoxColumn();
             toolTip1 = new ToolTip(components);
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
@@ -138,8 +163,21 @@
             ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
             panel4.SuspendLayout();
             tabPage3.SuspendLayout();
+            groupBox17.SuspendLayout();
+            tableLayoutPanel6.SuspendLayout();
+            groupBox15.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
+            groupBox16.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             groupBox12.SuspendLayout();
             groupBox11.SuspendLayout();
+            tabControl4.SuspendLayout();
+            tabPage8.SuspendLayout();
+            tabPage9.SuspendLayout();
+            tableLayoutPanel5.SuspendLayout();
+            panel5.SuspendLayout();
+            panel6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridView3).BeginInit();
             SuspendLayout();
             // 
             // tabControl1
@@ -211,9 +249,9 @@
             // buttonForMoreInfo1
             // 
             buttonForMoreInfo1.Dock = DockStyle.Right;
-            buttonForMoreInfo1.Location = new Point(1024, 369);
+            buttonForMoreInfo1.Location = new Point(895, 369);
             buttonForMoreInfo1.Name = "buttonForMoreInfo1";
-            buttonForMoreInfo1.Size = new Size(294, 36);
+            buttonForMoreInfo1.Size = new Size(423, 36);
             buttonForMoreInfo1.TabIndex = 5;
             buttonForMoreInfo1.Text = "Узнать подробную информацию об алгоритмах";
             buttonForMoreInfo1.UseVisualStyleBackColor = true;
@@ -443,6 +481,7 @@
             // 
             // checkedListBoxBitEmbed
             // 
+            checkedListBoxBitEmbed.CheckOnClick = true;
             checkedListBoxBitEmbed.ColumnWidth = 60;
             checkedListBoxBitEmbed.Enabled = false;
             checkedListBoxBitEmbed.FormattingEnabled = true;
@@ -453,6 +492,7 @@
             checkedListBoxBitEmbed.Size = new Size(495, 32);
             checkedListBoxBitEmbed.TabIndex = 14;
             checkedListBoxBitEmbed.Visible = false;
+            checkedListBoxBitEmbed.SelectedIndexChanged += checkedListBoxBitEmbed_SelectedIndexChanged;
             // 
             // checkedRGBInput
             // 
@@ -752,6 +792,7 @@
             // 
             // checkedListBoxBitDecode
             // 
+            checkedListBoxBitDecode.CheckOnClick = true;
             checkedListBoxBitDecode.ColumnWidth = 60;
             checkedListBoxBitDecode.Enabled = false;
             checkedListBoxBitDecode.FormattingEnabled = true;
@@ -918,6 +959,9 @@
             // 
             // tabPage3
             // 
+            tabPage3.Controls.Add(groupBox17);
+            tabPage3.Controls.Add(groupBox15);
+            tabPage3.Controls.Add(groupBox16);
             tabPage3.Controls.Add(groupBox12);
             tabPage3.Controls.Add(groupBox11);
             tabPage3.Location = new Point(4, 34);
@@ -927,54 +971,325 @@
             tabPage3.Text = "Анализ";
             tabPage3.UseVisualStyleBackColor = true;
             // 
+            // groupBox17
+            // 
+            groupBox17.Controls.Add(tableLayoutPanel6);
+            groupBox17.Location = new Point(526, 534);
+            groupBox17.Name = "groupBox17";
+            groupBox17.Size = new Size(1356, 449);
+            groupBox17.TabIndex = 15;
+            groupBox17.TabStop = false;
+            groupBox17.Text = "Логи";
+            // 
+            // tableLayoutPanel6
+            // 
+            tableLayoutPanel6.ColumnCount = 1;
+            tableLayoutPanel6.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel6.Controls.Add(textBox2, 0, 0);
+            tableLayoutPanel6.Controls.Add(button2, 0, 1);
+            tableLayoutPanel6.Dock = DockStyle.Fill;
+            tableLayoutPanel6.Location = new Point(3, 27);
+            tableLayoutPanel6.Name = "tableLayoutPanel6";
+            tableLayoutPanel6.RowCount = 2;
+            tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Percent, 89.89637F));
+            tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Percent, 10.1036272F));
+            tableLayoutPanel6.Size = new Size(1350, 419);
+            tableLayoutPanel6.TabIndex = 6;
+            // 
+            // textBox2
+            // 
+            textBox2.Dock = DockStyle.Fill;
+            textBox2.Location = new Point(3, 3);
+            textBox2.Multiline = true;
+            textBox2.Name = "textBox2";
+            textBox2.ScrollBars = ScrollBars.Vertical;
+            textBox2.Size = new Size(1344, 370);
+            textBox2.TabIndex = 4;
+            // 
+            // button2
+            // 
+            button2.Dock = DockStyle.Right;
+            button2.Location = new Point(924, 379);
+            button2.Name = "button2";
+            button2.Size = new Size(423, 37);
+            button2.TabIndex = 5;
+            button2.Text = "Узнать подробную информацию об алгоритмах";
+            button2.UseVisualStyleBackColor = true;
+            // 
+            // groupBox15
+            // 
+            groupBox15.Controls.Add(pictureBox3);
+            groupBox15.Location = new Point(1206, 3);
+            groupBox15.Name = "groupBox15";
+            groupBox15.Size = new Size(676, 528);
+            groupBox15.TabIndex = 14;
+            groupBox15.TabStop = false;
+            groupBox15.Text = "Бит-план изображения";
+            // 
+            // pictureBox3
+            // 
+            pictureBox3.Dock = DockStyle.Fill;
+            pictureBox3.Location = new Point(3, 27);
+            pictureBox3.Name = "pictureBox3";
+            pictureBox3.Size = new Size(670, 498);
+            pictureBox3.TabIndex = 0;
+            pictureBox3.TabStop = false;
+            // 
+            // groupBox16
+            // 
+            groupBox16.Controls.Add(pictureBox4);
+            groupBox16.Location = new Point(523, 3);
+            groupBox16.Name = "groupBox16";
+            groupBox16.Size = new Size(677, 528);
+            groupBox16.TabIndex = 13;
+            groupBox16.TabStop = false;
+            groupBox16.Text = "Изображение";
+            // 
+            // pictureBox4
+            // 
+            pictureBox4.Dock = DockStyle.Fill;
+            pictureBox4.Location = new Point(3, 27);
+            pictureBox4.Name = "pictureBox4";
+            pictureBox4.Size = new Size(671, 498);
+            pictureBox4.TabIndex = 0;
+            pictureBox4.TabStop = false;
+            // 
             // groupBox12
             // 
-            groupBox12.Controls.Add(comboBox1);
-            groupBox12.Location = new Point(3, 173);
+            groupBox12.Controls.Add(textBoxConteinerAnalysis);
+            groupBox12.Controls.Add(buttonConteinerAnalysis);
+            groupBox12.Location = new Point(3, 3);
             groupBox12.Name = "groupBox12";
-            groupBox12.Size = new Size(300, 96);
-            groupBox12.TabIndex = 3;
+            groupBox12.Size = new Size(514, 113);
+            groupBox12.TabIndex = 12;
             groupBox12.TabStop = false;
-            groupBox12.Text = "Настройки";
+            groupBox12.Text = "Выбрать изображение";
             // 
-            // comboBox1
+            // textBoxConteinerAnalysis
             // 
-            comboBox1.FormattingEnabled = true;
-            comboBox1.Items.AddRange(new object[] { "Серый", "Красный", "Зелёный", "Синий" });
-            comboBox1.Location = new Point(6, 43);
-            comboBox1.Name = "comboBox1";
-            comboBox1.Size = new Size(278, 33);
-            comboBox1.TabIndex = 0;
-            comboBox1.Text = "Цветовой канал";
+            textBoxConteinerAnalysis.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            textBoxConteinerAnalysis.Enabled = false;
+            textBoxConteinerAnalysis.Location = new Point(16, 30);
+            textBoxConteinerAnalysis.Name = "textBoxConteinerAnalysis";
+            textBoxConteinerAnalysis.Size = new Size(479, 31);
+            textBoxConteinerAnalysis.TabIndex = 1;
+            // 
+            // buttonConteinerAnalysis
+            // 
+            buttonConteinerAnalysis.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            buttonConteinerAnalysis.Location = new Point(16, 67);
+            buttonConteinerAnalysis.Name = "buttonConteinerAnalysis";
+            buttonConteinerAnalysis.Size = new Size(479, 31);
+            buttonConteinerAnalysis.TabIndex = 4;
+            buttonConteinerAnalysis.Text = "Выбрать изображение";
+            buttonConteinerAnalysis.UseVisualStyleBackColor = true;
+            buttonConteinerAnalysis.Click += buttonConteinerAnalysis_Click;
             // 
             // groupBox11
             // 
-            groupBox11.Controls.Add(button1);
-            groupBox11.Controls.Add(button2);
-            groupBox11.Location = new Point(3, 3);
+            groupBox11.Controls.Add(tabControl4);
+            groupBox11.Location = new Point(3, 123);
             groupBox11.Name = "groupBox11";
-            groupBox11.Size = new Size(300, 164);
+            groupBox11.Size = new Size(514, 349);
             groupBox11.TabIndex = 2;
             groupBox11.TabStop = false;
             groupBox11.Text = "Визуализация";
             // 
-            // button1
+            // tabControl4
             // 
-            button1.Location = new Point(6, 30);
-            button1.Name = "button1";
-            button1.Size = new Size(278, 55);
-            button1.TabIndex = 0;
-            button1.Text = "Пиксельное представление";
-            button1.UseVisualStyleBackColor = true;
+            tabControl4.Controls.Add(tabPage8);
+            tabControl4.Controls.Add(tabPage9);
+            tabControl4.Dock = DockStyle.Fill;
+            tabControl4.Location = new Point(3, 27);
+            tabControl4.Name = "tabControl4";
+            tabControl4.SelectedIndex = 0;
+            tabControl4.Size = new Size(508, 319);
+            tabControl4.TabIndex = 0;
             // 
-            // button2
+            // tabPage8
             // 
-            button2.Location = new Point(6, 91);
-            button2.Name = "button2";
-            button2.Size = new Size(278, 55);
-            button2.TabIndex = 1;
-            button2.Text = "Цветовые каналы";
-            button2.UseVisualStyleBackColor = true;
+            tabPage8.Controls.Add(checkedListBoxBitAnalysis);
+            tabPage8.Controls.Add(checkedListBoxRGBAnalysis);
+            tabPage8.Location = new Point(4, 34);
+            tabPage8.Name = "tabPage8";
+            tabPage8.Padding = new Padding(3);
+            tabPage8.Size = new Size(500, 281);
+            tabPage8.TabIndex = 0;
+            tabPage8.Text = "Бит-план";
+            tabPage8.UseVisualStyleBackColor = true;
+            // 
+            // checkedListBoxBitAnalysis
+            // 
+            checkedListBoxBitAnalysis.CheckOnClick = true;
+            checkedListBoxBitAnalysis.ColumnWidth = 60;
+            checkedListBoxBitAnalysis.FormattingEnabled = true;
+            checkedListBoxBitAnalysis.Items.AddRange(new object[] { "0", "1", "2", "3", "4", "5", "6", "7" });
+            checkedListBoxBitAnalysis.Location = new Point(3, 128);
+            checkedListBoxBitAnalysis.MultiColumn = true;
+            checkedListBoxBitAnalysis.Name = "checkedListBoxBitAnalysis";
+            checkedListBoxBitAnalysis.Size = new Size(495, 32);
+            checkedListBoxBitAnalysis.TabIndex = 14;
+            checkedListBoxBitAnalysis.ItemCheck += checkedListBoxBitAnalysis_ItemCheck;
+            checkedListBoxBitAnalysis.SelectedIndexChanged += checkedListBoxBitAnalysis_SelectedIndexChanged;
+            // 
+            // checkedListBoxRGBAnalysis
+            // 
+            checkedListBoxRGBAnalysis.CheckOnClick = true;
+            checkedListBoxRGBAnalysis.FormattingEnabled = true;
+            checkedListBoxRGBAnalysis.Items.AddRange(new object[] { "R", "G", "B", "Gray" });
+            checkedListBoxRGBAnalysis.Location = new Point(3, 6);
+            checkedListBoxRGBAnalysis.Name = "checkedListBoxRGBAnalysis";
+            checkedListBoxRGBAnalysis.Size = new Size(76, 116);
+            checkedListBoxRGBAnalysis.TabIndex = 1;
+            checkedListBoxRGBAnalysis.ItemCheck += checkedListBoxRGBAnalysis_ItemCheck;
+            checkedListBoxRGBAnalysis.SelectedIndexChanged += checkedListBoxRGBAnalysis_SelectedIndexChanged;
+            // 
+            // tabPage9
+            // 
+            tabPage9.Controls.Add(comboBox1);
+            tabPage9.Controls.Add(tableLayoutPanel5);
+            tabPage9.Location = new Point(4, 34);
+            tabPage9.Name = "tabPage9";
+            tabPage9.Padding = new Padding(3);
+            tabPage9.Size = new Size(500, 281);
+            tabPage9.TabIndex = 1;
+            tabPage9.Text = "Визор";
+            tabPage9.UseVisualStyleBackColor = true;
+            // 
+            // comboBox1
+            // 
+            comboBox1.AllowDrop = true;
+            comboBox1.FormattingEnabled = true;
+            comboBox1.Items.AddRange(new object[] { "LSB", "PVD" });
+            comboBox1.Location = new Point(6, 9);
+            comboBox1.Name = "comboBox1";
+            comboBox1.Size = new Size(120, 33);
+            comboBox1.TabIndex = 2;
+            comboBox1.Text = "Алгоритм";
+            // 
+            // tableLayoutPanel5
+            // 
+            tableLayoutPanel5.ColumnCount = 2;
+            tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 24F));
+            tableLayoutPanel5.Controls.Add(panel5, 1, 0);
+            tableLayoutPanel5.Controls.Add(panel6, 0, 1);
+            tableLayoutPanel5.Controls.Add(dataGridView3, 0, 0);
+            tableLayoutPanel5.Enabled = false;
+            tableLayoutPanel5.Location = new Point(132, 9);
+            tableLayoutPanel5.Name = "tableLayoutPanel5";
+            tableLayoutPanel5.RowCount = 2;
+            tableLayoutPanel5.RowStyles.Add(new RowStyle());
+            tableLayoutPanel5.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel5.Size = new Size(361, 267);
+            tableLayoutPanel5.TabIndex = 6;
+            tableLayoutPanel5.Visible = false;
+            // 
+            // panel5
+            // 
+            panel5.Controls.Add(button4);
+            panel5.Controls.Add(button5);
+            panel5.Dock = DockStyle.Fill;
+            panel5.Location = new Point(340, 3);
+            panel5.Name = "panel5";
+            panel5.Size = new Size(18, 221);
+            panel5.TabIndex = 17;
+            // 
+            // button4
+            // 
+            button4.Location = new Point(0, 147);
+            button4.Name = "button4";
+            button4.Size = new Size(18, 34);
+            button4.TabIndex = 16;
+            button4.Text = "↓";
+            button4.UseVisualStyleBackColor = true;
+            // 
+            // button5
+            // 
+            button5.Location = new Point(0, 107);
+            button5.Name = "button5";
+            button5.Size = new Size(18, 34);
+            button5.TabIndex = 15;
+            button5.Text = "↑";
+            button5.UseVisualStyleBackColor = true;
+            // 
+            // panel6
+            // 
+            panel6.Controls.Add(button6);
+            panel6.Controls.Add(button7);
+            panel6.Controls.Add(button8);
+            panel6.Dock = DockStyle.Fill;
+            panel6.Location = new Point(3, 230);
+            panel6.Name = "panel6";
+            panel6.Size = new Size(331, 34);
+            panel6.TabIndex = 4;
+            // 
+            // button6
+            // 
+            button6.Dock = DockStyle.Left;
+            button6.Location = new Point(0, 0);
+            button6.Name = "button6";
+            button6.Size = new Size(114, 34);
+            button6.TabIndex = 16;
+            button6.Text = "Применить";
+            button6.UseVisualStyleBackColor = true;
+            // 
+            // button7
+            // 
+            button7.Dock = DockStyle.Right;
+            button7.Location = new Point(145, 0);
+            button7.Name = "button7";
+            button7.Size = new Size(86, 34);
+            button7.TabIndex = 15;
+            button7.Text = "Удалить";
+            button7.UseVisualStyleBackColor = true;
+            // 
+            // button8
+            // 
+            button8.Dock = DockStyle.Right;
+            button8.Location = new Point(231, 0);
+            button8.Name = "button8";
+            button8.Size = new Size(100, 34);
+            button8.TabIndex = 15;
+            button8.Text = "Добавить";
+            button8.UseVisualStyleBackColor = true;
+            // 
+            // dataGridView3
+            // 
+            dataGridView3.AllowUserToAddRows = false;
+            dataGridView3.AllowUserToDeleteRows = false;
+            dataGridView3.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridView3.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            dataGridView3.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView3.Columns.AddRange(new DataGridViewColumn[] { dataGridViewTextBoxColumn4, dataGridViewTextBoxColumn5, dataGridViewTextBoxColumn6 });
+            dataGridView3.Location = new Point(3, 3);
+            dataGridView3.Name = "dataGridView3";
+            dataGridView3.RowHeadersVisible = false;
+            dataGridView3.RowHeadersWidth = 62;
+            dataGridView3.SelectionMode = DataGridViewSelectionMode.CellSelect;
+            dataGridView3.Size = new Size(331, 221);
+            dataGridView3.TabIndex = 3;
+            // 
+            // dataGridViewTextBoxColumn4
+            // 
+            dataGridViewTextBoxColumn4.FillWeight = 102.670341F;
+            dataGridViewTextBoxColumn4.HeaderText = "От";
+            dataGridViewTextBoxColumn4.MinimumWidth = 8;
+            dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
+            // 
+            // dataGridViewTextBoxColumn5
+            // 
+            dataGridViewTextBoxColumn5.FillWeight = 101.93322F;
+            dataGridViewTextBoxColumn5.HeaderText = "До";
+            dataGridViewTextBoxColumn5.MinimumWidth = 8;
+            dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
+            // 
+            // dataGridViewTextBoxColumn6
+            // 
+            dataGridViewTextBoxColumn6.FillWeight = 81.1918945F;
+            dataGridViewTextBoxColumn6.HeaderText = "t (бит)";
+            dataGridViewTextBoxColumn6.MinimumWidth = 8;
+            dataGridViewTextBoxColumn6.Name = "dataGridViewTextBoxColumn6";
             // 
             // Form1
             // 
@@ -1024,8 +1339,23 @@
             ((System.ComponentModel.ISupportInitialize)dataGridView2).EndInit();
             panel4.ResumeLayout(false);
             tabPage3.ResumeLayout(false);
+            groupBox17.ResumeLayout(false);
+            tableLayoutPanel6.ResumeLayout(false);
+            tableLayoutPanel6.PerformLayout();
+            groupBox15.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
+            groupBox16.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
             groupBox12.ResumeLayout(false);
+            groupBox12.PerformLayout();
             groupBox11.ResumeLayout(false);
+            tabControl4.ResumeLayout(false);
+            tabPage8.ResumeLayout(false);
+            tabPage9.ResumeLayout(false);
+            tableLayoutPanel5.ResumeLayout(false);
+            panel5.ResumeLayout(false);
+            panel6.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dataGridView3).EndInit();
             ResumeLayout(false);
         }
 
@@ -1065,15 +1395,11 @@
         private TabControl tabControl3;
         private TabPage tabPage6;
         private TextBox textBoxLogDecode;
-        private Button button2;
         private TabPage tabPage7;
         private PictureBox pictureBoxConteinerDecode;
         private Button buttonDecode;
         private Button buttonSaveDecode;
-        private Button button1;
         private GroupBox groupBox11;
-        private GroupBox groupBox12;
-        private ComboBox comboBox1;
         private GroupBox groupBox13;
         private TextBox textBoxLogInput;
         private GroupBox groupBox14;
@@ -1110,5 +1436,34 @@
         private Button buttonDown1;
         private TableLayoutPanel tableLayoutPanel4;
         private CheckedListBox checkedListBoxBitDecode;
+        private TabControl tabControl4;
+        private TabPage tabPage8;
+        private TabPage tabPage9;
+        private TableLayoutPanel tableLayoutPanel5;
+        private Panel panel5;
+        private Button button4;
+        private Button button5;
+        private Panel panel6;
+        private Button button6;
+        private Button button7;
+        private Button button8;
+        private DataGridView dataGridView3;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
+        private CheckedListBox checkedListBoxBitAnalysis;
+        private ComboBox comboBox1;
+        private CheckedListBox checkedListBoxRGBAnalysis;
+        private GroupBox groupBox12;
+        private TextBox textBoxConteinerAnalysis;
+        private Button buttonConteinerAnalysis;
+        private GroupBox groupBox15;
+        private PictureBox pictureBox3;
+        private GroupBox groupBox16;
+        private PictureBox pictureBox4;
+        private GroupBox groupBox17;
+        private TableLayoutPanel tableLayoutPanel6;
+        private TextBox textBox2;
+        private Button button2;
     }
 }
