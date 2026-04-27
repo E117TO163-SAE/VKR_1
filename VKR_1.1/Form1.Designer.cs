@@ -42,6 +42,7 @@
             groupBox5 = new GroupBox();
             pictureBox2 = new PictureBox();
             groupBox4 = new GroupBox();
+            panel7 = new Panel();
             pictureBox1 = new PictureBox();
             groupBox3 = new GroupBox();
             tableLayoutPanel1 = new TableLayoutPanel();
@@ -105,19 +106,29 @@
             textBox2 = new TextBox();
             button2 = new Button();
             groupBox15 = new GroupBox();
+            panel9 = new Panel();
             pictureBox3 = new PictureBox();
             groupBox16 = new GroupBox();
+            panel8 = new Panel();
             pictureBox4 = new PictureBox();
-            groupBox12 = new GroupBox();
-            textBoxConteinerAnalysis = new TextBox();
-            buttonConteinerAnalysis = new Button();
             groupBox11 = new GroupBox();
             tabControl4 = new TabControl();
             tabPage8 = new TabPage();
             checkedListBoxBitAnalysis = new CheckedListBox();
             checkedListBoxRGBAnalysis = new CheckedListBox();
+            groupBox12 = new GroupBox();
+            textBoxConteinerAnalysis = new TextBox();
+            buttonConteinerAnalysis = new Button();
             tabPage9 = new TabPage();
-            comboBox1 = new ComboBox();
+            groupBox19 = new GroupBox();
+            textBox3 = new TextBox();
+            buttonConteinerA = new Button();
+            groupBox18 = new GroupBox();
+            textBox1 = new TextBox();
+            buttonOirgA = new Button();
+            numericUpDownAnalysisScale = new NumericUpDown();
+            label3 = new Label();
+            comboBoxMethod = new ComboBox();
             tableLayoutPanel5 = new TableLayoutPanel();
             panel5 = new Panel();
             button4 = new Button();
@@ -139,6 +150,7 @@
             groupBox5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             groupBox4.SuspendLayout();
+            panel7.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             groupBox3.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
@@ -166,14 +178,19 @@
             groupBox17.SuspendLayout();
             tableLayoutPanel6.SuspendLayout();
             groupBox15.SuspendLayout();
+            panel9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             groupBox16.SuspendLayout();
+            panel8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
-            groupBox12.SuspendLayout();
             groupBox11.SuspendLayout();
             tabControl4.SuspendLayout();
             tabPage8.SuspendLayout();
+            groupBox12.SuspendLayout();
             tabPage9.SuspendLayout();
+            groupBox19.SuspendLayout();
+            groupBox18.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numericUpDownAnalysisScale).BeginInit();
             tableLayoutPanel5.SuspendLayout();
             panel5.SuspendLayout();
             panel6.SuspendLayout();
@@ -318,7 +335,7 @@
             // 
             // groupBox4
             // 
-            groupBox4.Controls.Add(pictureBox1);
+            groupBox4.Controls.Add(panel7);
             groupBox4.Location = new Point(555, 3);
             groupBox4.Name = "groupBox4";
             groupBox4.Size = new Size(650, 528);
@@ -326,10 +343,19 @@
             groupBox4.TabStop = false;
             groupBox4.Text = "Изображение до встраивания секрета";
             // 
+            // panel7
+            // 
+            panel7.Controls.Add(pictureBox1);
+            panel7.Dock = DockStyle.Fill;
+            panel7.Location = new Point(3, 27);
+            panel7.Name = "panel7";
+            panel7.Size = new Size(644, 498);
+            panel7.TabIndex = 14;
+            // 
             // pictureBox1
             // 
             pictureBox1.Dock = DockStyle.Fill;
-            pictureBox1.Location = new Point(3, 27);
+            pictureBox1.Location = new Point(0, 0);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(644, 498);
             pictureBox1.TabIndex = 0;
@@ -962,7 +988,6 @@
             tabPage3.Controls.Add(groupBox17);
             tabPage3.Controls.Add(groupBox15);
             tabPage3.Controls.Add(groupBox16);
-            tabPage3.Controls.Add(groupBox12);
             tabPage3.Controls.Add(groupBox11);
             tabPage3.Location = new Point(4, 34);
             tabPage3.Name = "tabPage3";
@@ -1018,7 +1043,7 @@
             // 
             // groupBox15
             // 
-            groupBox15.Controls.Add(pictureBox3);
+            groupBox15.Controls.Add(panel8);
             groupBox15.Location = new Point(1206, 3);
             groupBox15.Name = "groupBox15";
             groupBox15.Size = new Size(676, 528);
@@ -1026,10 +1051,19 @@
             groupBox15.TabStop = false;
             groupBox15.Text = "Бит-план изображения";
             // 
+            // panel9
+            // 
+            panel9.AutoScroll = true;
+            panel9.Controls.Add(pictureBox3);
+            panel9.Dock = DockStyle.Fill;
+            panel9.Location = new Point(3, 27);
+            panel9.Name = "panel9";
+            panel9.Size = new Size(671, 498);
+            panel9.TabIndex = 16;
+            // 
             // pictureBox3
             // 
-            pictureBox3.Dock = DockStyle.Fill;
-            pictureBox3.Location = new Point(3, 27);
+            pictureBox3.Location = new Point(0, 0);
             pictureBox3.Name = "pictureBox3";
             pictureBox3.Size = new Size(670, 498);
             pictureBox3.TabIndex = 0;
@@ -1037,7 +1071,7 @@
             // 
             // groupBox16
             // 
-            groupBox16.Controls.Add(pictureBox4);
+            groupBox16.Controls.Add(panel9);
             groupBox16.Location = new Point(523, 3);
             groupBox16.Name = "groupBox16";
             groupBox16.Size = new Size(677, 528);
@@ -1045,52 +1079,30 @@
             groupBox16.TabStop = false;
             groupBox16.Text = "Изображение";
             // 
+            // panel8
+            // 
+            panel8.AutoScroll = true;
+            panel8.Controls.Add(pictureBox4);
+            panel8.Dock = DockStyle.Fill;
+            panel8.Location = new Point(3, 27);
+            panel8.Name = "panel8";
+            panel8.Size = new Size(670, 498);
+            panel8.TabIndex = 16;
+            // 
             // pictureBox4
             // 
-            pictureBox4.Dock = DockStyle.Fill;
-            pictureBox4.Location = new Point(3, 27);
+            pictureBox4.Location = new Point(0, 0);
             pictureBox4.Name = "pictureBox4";
             pictureBox4.Size = new Size(671, 498);
             pictureBox4.TabIndex = 0;
             pictureBox4.TabStop = false;
             // 
-            // groupBox12
-            // 
-            groupBox12.Controls.Add(textBoxConteinerAnalysis);
-            groupBox12.Controls.Add(buttonConteinerAnalysis);
-            groupBox12.Location = new Point(3, 3);
-            groupBox12.Name = "groupBox12";
-            groupBox12.Size = new Size(514, 113);
-            groupBox12.TabIndex = 12;
-            groupBox12.TabStop = false;
-            groupBox12.Text = "Выбрать изображение";
-            // 
-            // textBoxConteinerAnalysis
-            // 
-            textBoxConteinerAnalysis.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            textBoxConteinerAnalysis.Enabled = false;
-            textBoxConteinerAnalysis.Location = new Point(16, 30);
-            textBoxConteinerAnalysis.Name = "textBoxConteinerAnalysis";
-            textBoxConteinerAnalysis.Size = new Size(479, 31);
-            textBoxConteinerAnalysis.TabIndex = 1;
-            // 
-            // buttonConteinerAnalysis
-            // 
-            buttonConteinerAnalysis.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            buttonConteinerAnalysis.Location = new Point(16, 67);
-            buttonConteinerAnalysis.Name = "buttonConteinerAnalysis";
-            buttonConteinerAnalysis.Size = new Size(479, 31);
-            buttonConteinerAnalysis.TabIndex = 4;
-            buttonConteinerAnalysis.Text = "Выбрать изображение";
-            buttonConteinerAnalysis.UseVisualStyleBackColor = true;
-            buttonConteinerAnalysis.Click += buttonConteinerAnalysis_Click;
-            // 
             // groupBox11
             // 
             groupBox11.Controls.Add(tabControl4);
-            groupBox11.Location = new Point(3, 123);
+            groupBox11.Location = new Point(3, 3);
             groupBox11.Name = "groupBox11";
-            groupBox11.Size = new Size(514, 349);
+            groupBox11.Size = new Size(514, 632);
             groupBox11.TabIndex = 2;
             groupBox11.TabStop = false;
             groupBox11.Text = "Визуализация";
@@ -1103,17 +1115,18 @@
             tabControl4.Location = new Point(3, 27);
             tabControl4.Name = "tabControl4";
             tabControl4.SelectedIndex = 0;
-            tabControl4.Size = new Size(508, 319);
+            tabControl4.Size = new Size(508, 602);
             tabControl4.TabIndex = 0;
             // 
             // tabPage8
             // 
             tabPage8.Controls.Add(checkedListBoxBitAnalysis);
             tabPage8.Controls.Add(checkedListBoxRGBAnalysis);
+            tabPage8.Controls.Add(groupBox12);
             tabPage8.Location = new Point(4, 34);
             tabPage8.Name = "tabPage8";
             tabPage8.Padding = new Padding(3);
-            tabPage8.Size = new Size(500, 281);
+            tabPage8.Size = new Size(500, 564);
             tabPage8.TabIndex = 0;
             tabPage8.Text = "Бит-план";
             tabPage8.UseVisualStyleBackColor = true;
@@ -1124,7 +1137,7 @@
             checkedListBoxBitAnalysis.ColumnWidth = 60;
             checkedListBoxBitAnalysis.FormattingEnabled = true;
             checkedListBoxBitAnalysis.Items.AddRange(new object[] { "0", "1", "2", "3", "4", "5", "6", "7" });
-            checkedListBoxBitAnalysis.Location = new Point(3, 128);
+            checkedListBoxBitAnalysis.Location = new Point(3, 247);
             checkedListBoxBitAnalysis.MultiColumn = true;
             checkedListBoxBitAnalysis.Name = "checkedListBoxBitAnalysis";
             checkedListBoxBitAnalysis.Size = new Size(495, 32);
@@ -1137,35 +1150,149 @@
             checkedListBoxRGBAnalysis.CheckOnClick = true;
             checkedListBoxRGBAnalysis.FormattingEnabled = true;
             checkedListBoxRGBAnalysis.Items.AddRange(new object[] { "R", "G", "B", "Gray" });
-            checkedListBoxRGBAnalysis.Location = new Point(3, 6);
+            checkedListBoxRGBAnalysis.Location = new Point(3, 125);
             checkedListBoxRGBAnalysis.Name = "checkedListBoxRGBAnalysis";
             checkedListBoxRGBAnalysis.Size = new Size(76, 116);
             checkedListBoxRGBAnalysis.TabIndex = 1;
             checkedListBoxRGBAnalysis.ItemCheck += checkedListBoxRGBAnalysis_ItemCheck;
             checkedListBoxRGBAnalysis.SelectedIndexChanged += checkedListBoxRGBAnalysis_SelectedIndexChanged;
             // 
+            // groupBox12
+            // 
+            groupBox12.Controls.Add(textBoxConteinerAnalysis);
+            groupBox12.Controls.Add(buttonConteinerAnalysis);
+            groupBox12.Location = new Point(3, 6);
+            groupBox12.Name = "groupBox12";
+            groupBox12.Size = new Size(491, 113);
+            groupBox12.TabIndex = 12;
+            groupBox12.TabStop = false;
+            groupBox12.Text = "Выбрать изображение";
+            // 
+            // textBoxConteinerAnalysis
+            // 
+            textBoxConteinerAnalysis.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            textBoxConteinerAnalysis.Enabled = false;
+            textBoxConteinerAnalysis.Location = new Point(16, 30);
+            textBoxConteinerAnalysis.Name = "textBoxConteinerAnalysis";
+            textBoxConteinerAnalysis.Size = new Size(456, 31);
+            textBoxConteinerAnalysis.TabIndex = 1;
+            // 
+            // buttonConteinerAnalysis
+            // 
+            buttonConteinerAnalysis.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            buttonConteinerAnalysis.Location = new Point(16, 67);
+            buttonConteinerAnalysis.Name = "buttonConteinerAnalysis";
+            buttonConteinerAnalysis.Size = new Size(456, 31);
+            buttonConteinerAnalysis.TabIndex = 4;
+            buttonConteinerAnalysis.Text = "Выбрать изображение";
+            buttonConteinerAnalysis.UseVisualStyleBackColor = true;
+            buttonConteinerAnalysis.Click += buttonConteinerAnalysis_Click;
+            // 
             // tabPage9
             // 
-            tabPage9.Controls.Add(comboBox1);
+            tabPage9.Controls.Add(groupBox19);
+            tabPage9.Controls.Add(groupBox18);
+            tabPage9.Controls.Add(numericUpDownAnalysisScale);
+            tabPage9.Controls.Add(label3);
+            tabPage9.Controls.Add(comboBoxMethod);
             tabPage9.Controls.Add(tableLayoutPanel5);
             tabPage9.Location = new Point(4, 34);
             tabPage9.Name = "tabPage9";
             tabPage9.Padding = new Padding(3);
-            tabPage9.Size = new Size(500, 281);
+            tabPage9.Size = new Size(500, 564);
             tabPage9.TabIndex = 1;
             tabPage9.Text = "Визор";
             tabPage9.UseVisualStyleBackColor = true;
             // 
-            // comboBox1
+            // groupBox19
             // 
-            comboBox1.AllowDrop = true;
-            comboBox1.FormattingEnabled = true;
-            comboBox1.Items.AddRange(new object[] { "LSB", "PVD" });
-            comboBox1.Location = new Point(6, 9);
-            comboBox1.Name = "comboBox1";
-            comboBox1.Size = new Size(120, 33);
-            comboBox1.TabIndex = 2;
-            comboBox1.Text = "Алгоритм";
+            groupBox19.Controls.Add(textBox3);
+            groupBox19.Controls.Add(buttonConteinerA);
+            groupBox19.Location = new Point(3, 125);
+            groupBox19.Name = "groupBox19";
+            groupBox19.Size = new Size(491, 113);
+            groupBox19.TabIndex = 14;
+            groupBox19.TabStop = false;
+            groupBox19.Text = "Выбрать изображение-контейнер";
+            // 
+            // textBox3
+            // 
+            textBox3.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            textBox3.Enabled = false;
+            textBox3.Location = new Point(16, 30);
+            textBox3.Name = "textBox3";
+            textBox3.Size = new Size(456, 31);
+            textBox3.TabIndex = 1;
+            // 
+            // buttonConteinerA
+            // 
+            buttonConteinerA.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            buttonConteinerA.Location = new Point(16, 67);
+            buttonConteinerA.Name = "buttonConteinerA";
+            buttonConteinerA.Size = new Size(456, 31);
+            buttonConteinerA.TabIndex = 4;
+            buttonConteinerA.Text = "Выбрать изображение";
+            buttonConteinerA.UseVisualStyleBackColor = true;
+            // 
+            // groupBox18
+            // 
+            groupBox18.Controls.Add(textBox1);
+            groupBox18.Controls.Add(buttonOirgA);
+            groupBox18.Location = new Point(3, 6);
+            groupBox18.Name = "groupBox18";
+            groupBox18.Size = new Size(491, 113);
+            groupBox18.TabIndex = 13;
+            groupBox18.TabStop = false;
+            groupBox18.Text = "Выбрать оригинальное изображение";
+            // 
+            // textBox1
+            // 
+            textBox1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            textBox1.Enabled = false;
+            textBox1.Location = new Point(16, 30);
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(456, 31);
+            textBox1.TabIndex = 1;
+            // 
+            // buttonOirgA
+            // 
+            buttonOirgA.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            buttonOirgA.Location = new Point(16, 67);
+            buttonOirgA.Name = "buttonOirgA";
+            buttonOirgA.Size = new Size(456, 31);
+            buttonOirgA.TabIndex = 4;
+            buttonOirgA.Text = "Выбрать изображение";
+            buttonOirgA.UseVisualStyleBackColor = true;
+            // 
+            // numericUpDownAnalysisScale
+            // 
+            numericUpDownAnalysisScale.Location = new Point(162, 245);
+            numericUpDownAnalysisScale.Maximum = new decimal(new int[] { 40, 0, 0, 0 });
+            numericUpDownAnalysisScale.Minimum = new decimal(new int[] { 4, 0, 0, 0 });
+            numericUpDownAnalysisScale.Name = "numericUpDownAnalysisScale";
+            numericUpDownAnalysisScale.Size = new Size(84, 31);
+            numericUpDownAnalysisScale.TabIndex = 16;
+            numericUpDownAnalysisScale.Value = new decimal(new int[] { 18, 0, 0, 0 });
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(7, 247);
+            label3.Name = "label3";
+            label3.Size = new Size(154, 25);
+            label3.TabIndex = 15;
+            label3.Text = "Масштаб пикселя";
+            // 
+            // comboBoxMethod
+            // 
+            comboBoxMethod.AllowDrop = true;
+            comboBoxMethod.FormattingEnabled = true;
+            comboBoxMethod.Items.AddRange(new object[] { "LSB", "PVD" });
+            comboBoxMethod.Location = new Point(7, 280);
+            comboBoxMethod.Name = "comboBoxMethod";
+            comboBoxMethod.Size = new Size(120, 33);
+            comboBoxMethod.TabIndex = 2;
+            comboBoxMethod.Text = "Алгоритм";
             // 
             // tableLayoutPanel5
             // 
@@ -1176,7 +1303,7 @@
             tableLayoutPanel5.Controls.Add(panel6, 0, 1);
             tableLayoutPanel5.Controls.Add(dataGridView3, 0, 0);
             tableLayoutPanel5.Enabled = false;
-            tableLayoutPanel5.Location = new Point(132, 9);
+            tableLayoutPanel5.Location = new Point(133, 280);
             tableLayoutPanel5.Name = "tableLayoutPanel5";
             tableLayoutPanel5.RowCount = 2;
             tableLayoutPanel5.RowStyles.Add(new RowStyle());
@@ -1309,6 +1436,7 @@
             groupBox5.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             groupBox4.ResumeLayout(false);
+            panel7.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             groupBox3.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
@@ -1343,15 +1471,23 @@
             tableLayoutPanel6.ResumeLayout(false);
             tableLayoutPanel6.PerformLayout();
             groupBox15.ResumeLayout(false);
+            panel9.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             groupBox16.ResumeLayout(false);
+            panel8.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
-            groupBox12.ResumeLayout(false);
-            groupBox12.PerformLayout();
             groupBox11.ResumeLayout(false);
             tabControl4.ResumeLayout(false);
             tabPage8.ResumeLayout(false);
+            groupBox12.ResumeLayout(false);
+            groupBox12.PerformLayout();
             tabPage9.ResumeLayout(false);
+            tabPage9.PerformLayout();
+            groupBox19.ResumeLayout(false);
+            groupBox19.PerformLayout();
+            groupBox18.ResumeLayout(false);
+            groupBox18.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numericUpDownAnalysisScale).EndInit();
             tableLayoutPanel5.ResumeLayout(false);
             panel5.ResumeLayout(false);
             panel6.ResumeLayout(false);
@@ -1452,7 +1588,7 @@
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
         private CheckedListBox checkedListBoxBitAnalysis;
-        private ComboBox comboBox1;
+        private ComboBox comboBoxMethod;
         private CheckedListBox checkedListBoxRGBAnalysis;
         private GroupBox groupBox12;
         private TextBox textBoxConteinerAnalysis;
@@ -1465,5 +1601,16 @@
         private TableLayoutPanel tableLayoutPanel6;
         private TextBox textBox2;
         private Button button2;
+        private GroupBox groupBox19;
+        private TextBox textBox3;
+        private Button buttonConteinerA;
+        private GroupBox groupBox18;
+        private TextBox textBox1;
+        private Button buttonOirgA;
+        private Panel panel7;
+        private Panel panel9;
+        private Panel panel8;
+        private Label label3;
+        private NumericUpDown numericUpDownAnalysisScale;
     }
 }

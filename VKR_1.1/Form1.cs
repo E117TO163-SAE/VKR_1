@@ -1,5 +1,6 @@
 using NIRSteg_2;
 using System.Text;
+using System.Drawing.Drawing2D;
 
 namespace VKR_1
 {
@@ -11,6 +12,8 @@ namespace VKR_1
         private Bitmap loadedBitmap = null;
         private Bitmap loadedBitmapForDecode = null;
         private Bitmap analysisPict = null;
+        private Bitmap? analysisOriginalBitmap = null;
+        private Bitmap? analysisStegoBitmap = null;
 
         private string pathStegoImg = null;
 
@@ -27,15 +30,23 @@ namespace VKR_1
 
         private bool _embed = true;
         private bool _decode = false;
+        private bool _syncingAnalysisScroll = false;
 
+        private const int DefaultAnalysisCellSize = 18;
+        private const int SelectionBorderWidth = 3;
 
+        private int _analysisCellSize = DefaultAnalysisCellSize;
+        private Point? _selectedAnalysisPoint = null;
 
         public Form1()
         {
             InitializeComponent();
             buttonSaveDecode.Visible = false;
             buttonSaveDecode.Enabled = false;
+
             LoadRangesToGrid();
+            LoadRangesToAnalysisGrid();
+            ConfigureAnalysisVisualizer();
         }
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -60,6 +71,12 @@ namespace VKR_1
                     checkedListBoxBitAnalysis.SetItemChecked(i, true);
                 }
 
+                if (tabControl4.SelectedTab == tabPage9)
+                {
+                    groupBox16.Text = "Оригинальное изображение";  
+                    groupBox15.Text = "Стегоизображение";
+                    RenderAnalysisVisualizer();
+                }
             }
         }
 
@@ -630,7 +647,7 @@ namespace VKR_1
             error = null;
             return true;
         }
-        
+
         //
         // Работа с таблицами для PVD
         //
@@ -860,6 +877,12 @@ namespace VKR_1
 
         private void bitPlan()
         {
+            if (analysisPict == null)
+            {
+                pictureBox3.Image = null;
+                return;
+            }
+
             pictureBox3.Image = null;
             bool useGrayscale = checkedListBoxRGBAnalysis.GetItemChecked(3);
             bool useRed = checkedListBoxRGBAnalysis.GetItemChecked(0);
@@ -909,5 +932,447 @@ namespace VKR_1
         {
             bitPlan();
         }
+
+        private void ConfigureAnalysisVisualizer()
+        {
+            pictureBox3.SizeMode = PictureBoxSizeMode.Normal;
+            pictureBox4.SizeMode = PictureBoxSizeMode.Normal;
+
+            panel8.AutoScroll = true;
+            panel9.AutoScroll = true;
+            panel8.Scroll += AnalysisPanel_Scroll;
+            panel9.Scroll += AnalysisPanel_Scroll;
+            panel8.Paint += AnalysisPanel_Paint;
+            panel9.Paint += AnalysisPanel_Paint;
+            panel8.MouseClick += AnalysisPanel_MouseClick;
+            panel9.MouseClick += AnalysisPanel_MouseClick;
+
+            buttonOirgA.Click += buttonOirgA_Click;
+            buttonConteinerA.Click += buttonConteinerA_Click;
+            comboBoxMethod.SelectedIndexChanged += comboBoxMethod_SelectedIndexChanged;
+            button2.Click += buttonForMoreInfo_Click;
+            tabControl4.SelectedIndexChanged += tabControl4_SelectedIndexChanged;
+            numericUpDownAnalysisScale.ValueChanged += numericUpDownAnalysisScale_ValueChanged;
+
+            textBox2.ReadOnly = true;
+            numericUpDownAnalysisScale.Value = DefaultAnalysisCellSize;
+        }
+
+        private void LoadRangesToAnalysisGrid()
+        {
+            dataGridView3.Rows.Clear();
+            foreach (var (l, u) in PvdSteganography.Ranges)
+            {
+                int t = (int)Math.Floor(Math.Log(u - l + 1, 2));
+                dataGridView3.Rows.Add(l, u, t);
+            }
+        }
+
+        private void buttonOirgA_Click(object? sender, EventArgs e)
+        {
+            Bitmap? loaded = LoadBitmapForAnalysis(out string fileName);
+            if (loaded == null)
+            {
+                return;
+            }
+
+            analysisOriginalBitmap?.Dispose();
+            analysisOriginalBitmap = loaded;
+            textBox1.Text = fileName;
+            ResetAnalysisSelection();
+            RenderAnalysisVisualizer();
+        }
+
+        private void buttonConteinerA_Click(object? sender, EventArgs e)
+        {
+            Bitmap? loaded = LoadBitmapForAnalysis(out string fileName);
+            if (loaded == null)
+            {
+                return;
+            }
+
+            analysisStegoBitmap?.Dispose();
+            analysisStegoBitmap = loaded;
+            textBox3.Text = fileName;
+            ResetAnalysisSelection();
+            RenderAnalysisVisualizer();
+        }
+
+        private Bitmap? LoadBitmapForAnalysis(out string fileName)
+        {
+            fileName = string.Empty;
+
+            using OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "PNG files|*.png|TIFF files|*.tiff";
+            if (ofd.ShowDialog() != DialogResult.OK)
+            {
+                return null;
+            }
+
+            fileName = Path.GetFileName(ofd.FileName);
+            using Bitmap temp = new Bitmap(ofd.FileName);
+            return new Bitmap(temp);
+        }
+
+        private void comboBoxMethod_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            bool isPvd = IsPvdAnalysisMode();
+            tableLayoutPanel5.Visible = isPvd;
+            tableLayoutPanel5.Enabled = isPvd;
+
+            ResetAnalysisSelection();
+            RenderAnalysisVisualizer();
+        }
+
+        private void numericUpDownAnalysisScale_ValueChanged(object? sender, EventArgs e)
+        {
+            _analysisCellSize = (int)numericUpDownAnalysisScale.Value;
+            RenderAnalysisVisualizer();
+        }
+
+        private void tabControl4_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            if (tabControl4.SelectedTab == tabPage8)
+            {
+                pictureBox3.Visible = true;
+                pictureBox4.Visible = true;
+                panel8.Invalidate();
+                panel9.Invalidate();
+                bitPlan();
+                return;
+            }
+
+            if (tabControl4.SelectedTab == tabPage9)
+            {
+                pictureBox3.Visible = false;
+                pictureBox4.Visible = false;
+                RenderAnalysisVisualizer();
+            }
+        }
+
+        private void AnalysisPanel_MouseClick(object? sender, MouseEventArgs e)
+        {
+            if (tabControl4.SelectedTab != tabPage9)
+            {
+                return;
+            }
+
+            Panel? panel = sender as Panel;
+            Bitmap? reference = panel == panel9 ? analysisOriginalBitmap : analysisStegoBitmap;
+            reference ??= GetAnalysisReferenceBitmap();
+            if (reference == null)
+            {
+                return;
+            }
+
+            int groupWidth = GetAnalysisGroupWidth();
+            Point scrollOffset = panel?.AutoScrollPosition ?? Point.Empty;
+            int virtualX = e.X - scrollOffset.X;
+            int virtualY = e.Y - scrollOffset.Y;
+            int pixelX = virtualX / _analysisCellSize;
+            int pixelY = virtualY / _analysisCellSize;
+
+            if (pixelX < 0 || pixelY < 0 || pixelY >= reference.Height || pixelX >= reference.Width)
+            {
+                return;
+            }
+
+            int startX = groupWidth == 2 ? pixelX - (pixelX % 2) : pixelX;
+            if (startX >= reference.Width)
+            {
+                return;
+            }
+
+            _selectedAnalysisPoint = new Point(startX, pixelY);
+            RenderAnalysisVisualizer();
+            UpdateAnalysisInfo();
+        }
+
+        private void AnalysisPanel_Paint(object? sender, PaintEventArgs e)
+        {
+            if (tabControl4.SelectedTab != tabPage9)
+            {
+                return;
+            }
+
+            Panel? panel = sender as Panel;
+            if (panel == null)
+            {
+                return;
+            }
+
+            Bitmap? source = panel == panel9 ? analysisOriginalBitmap : analysisStegoBitmap;
+            DrawAnalysisSurface(panel, e.Graphics, source);
+        }
+
+        private void AnalysisPanel_Scroll(object? sender, ScrollEventArgs e)
+        {
+            if (_syncingAnalysisScroll || tabControl4.SelectedTab != tabPage9)
+            {
+                return;
+            }
+
+            Panel? source = sender as Panel;
+            Panel target = source == panel8 ? panel9 : panel8;
+            SyncAnalysisScroll(source, target);
+        }
+
+        private void SyncAnalysisScroll(Panel? source, Panel? target)
+        {
+            if (source == null || target == null)
+            {
+                return;
+            }
+
+            _syncingAnalysisScroll = true;
+            try
+            {
+                Point sourceOffset = source.AutoScrollPosition;
+                target.AutoScrollPosition = new Point(-sourceOffset.X, -sourceOffset.Y);
+            }
+            finally
+            {
+                _syncingAnalysisScroll = false;
+            }
+        }
+
+        private void ResetAnalysisSelection()
+        {
+            _selectedAnalysisPoint = null;
+            textBox2.Clear();
+        }
+
+        private bool IsPvdAnalysisMode()
+        {
+            return string.Equals(comboBoxMethod.Text, "PVD", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private int GetAnalysisGroupWidth()
+        {
+            return IsPvdAnalysisMode() ? 2 : 1;
+        }
+
+        private Bitmap? GetAnalysisReferenceBitmap()
+        {
+            return analysisOriginalBitmap ?? analysisStegoBitmap;
+        }
+
+        private void RenderAnalysisVisualizer()
+        {
+            if (tabControl4.SelectedTab != tabPage9)
+            {
+                return;
+            }
+
+            pictureBox3.Visible = false;
+            pictureBox4.Visible = false;
+
+            UpdateAnalysisScrollArea(panel9, analysisOriginalBitmap);
+            UpdateAnalysisScrollArea(panel8, analysisStegoBitmap);
+
+            panel9.Invalidate();
+            panel8.Invalidate();
+
+            if (_selectedAnalysisPoint.HasValue)
+            {
+                UpdateAnalysisInfo();
+            }
+        }
+
+        private void UpdateAnalysisScrollArea(Panel panel, Bitmap? source)
+        {
+            if (source == null)
+            {
+                panel.AutoScrollMinSize = Size.Empty;
+                return;
+            }
+
+            panel.AutoScrollMinSize = new Size(
+                source.Width * _analysisCellSize + 1,
+                source.Height * _analysisCellSize + 1);
+        }
+
+        private void DrawAnalysisSurface(Panel panel, Graphics graphics, Bitmap? source)
+        {
+            graphics.Clear(SystemColors.ControlDarkDark);
+
+            if (source == null)
+            {
+                return;
+            }
+
+            int groupWidth = GetAnalysisGroupWidth();
+            graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+            graphics.PixelOffsetMode = PixelOffsetMode.Half;
+            Point scrollOffset = panel.AutoScrollPosition;
+
+            int startX = Math.Max(0, (-scrollOffset.X) / _analysisCellSize);
+            int startY = Math.Max(0, (-scrollOffset.Y) / _analysisCellSize);
+            int endX = Math.Min(source.Width - 1, (-scrollOffset.X + panel.ClientSize.Width) / _analysisCellSize + 1);
+            int endY = Math.Min(source.Height - 1, (-scrollOffset.Y + panel.ClientSize.Height) / _analysisCellSize + 1);
+
+            graphics.TranslateTransform(scrollOffset.X, scrollOffset.Y);
+
+            for (int y = startY; y <= endY; y++)
+            {
+                for (int x = startX; x <= endX; x++)
+                {
+                    using SolidBrush brush = new SolidBrush(source.GetPixel(x, y));
+                    graphics.FillRectangle(
+                        brush,
+                        x * _analysisCellSize,
+                        y * _analysisCellSize,
+                        _analysisCellSize,
+                        _analysisCellSize);
+                }
+            }
+
+            using Pen gridPen = new Pen(Color.FromArgb(110, Color.White), 1f);
+            for (int y = startY; y <= Math.Min(source.Height, endY + 1); y++)
+            {
+                int py = y * _analysisCellSize;
+                graphics.DrawLine(gridPen, startX * _analysisCellSize, py, (endX + 1) * _analysisCellSize, py);
+            }
+
+            for (int x = startX; x <= Math.Min(source.Width, endX + 1); x++)
+            {
+                int px = x * _analysisCellSize;
+                graphics.DrawLine(gridPen, px, startY * _analysisCellSize, px, (endY + 1) * _analysisCellSize);
+            }
+
+            if (groupWidth == 2)
+            {
+                using Pen pairPen = new Pen(Color.FromArgb(190, Color.DeepSkyBlue), 2f);
+                int pairStartX = startX - (startX % 2);
+                for (int x = Math.Max(0, pairStartX); x <= Math.Min(source.Width, endX + 1); x += 2)
+                {
+                    int px = x * _analysisCellSize;
+                    graphics.DrawLine(pairPen, px, startY * _analysisCellSize, px, (endY + 1) * _analysisCellSize);
+                }
+            }
+
+            if (_selectedAnalysisPoint.HasValue)
+            {
+                Point selected = _selectedAnalysisPoint.Value;
+                int selectedWidth = Math.Min(groupWidth, source.Width - selected.X);
+                if (selected.Y >= 0 && selected.Y < source.Height && selectedWidth > 0)
+                {
+                    Rectangle selection = new Rectangle(
+                        selected.X * _analysisCellSize,
+                        selected.Y * _analysisCellSize,
+                        selectedWidth * _analysisCellSize,
+                        _analysisCellSize);
+
+                    using SolidBrush fill = new SolidBrush(Color.FromArgb(60, Color.Fuchsia));
+                    using Pen border = new Pen(Color.Fuchsia, SelectionBorderWidth);
+                    graphics.FillRectangle(fill, selection);
+                    graphics.DrawRectangle(border, selection);
+                }
+            }
+        }
+
+        private void UpdateAnalysisInfo()
+        {
+            if (!_selectedAnalysisPoint.HasValue)
+            {
+                textBox2.Clear();
+                return;
+            }
+
+            Bitmap? original = analysisOriginalBitmap;
+            Bitmap? stego = analysisStegoBitmap;
+            Point point = _selectedAnalysisPoint.Value;
+
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"Метод: {(IsPvdAnalysisMode() ? "PVD" : "LSB")}");
+            sb.AppendLine($"Координаты блока: X={point.X}, Y={point.Y}");
+            sb.AppendLine();
+
+            if (IsPvdAnalysisMode())
+            {
+                AppendPvdPixelInfo(sb, "Оригинал", original, point);
+                sb.AppendLine();
+                AppendPvdPixelInfo(sb, "Стего-контейнер", stego, point);
+            }
+            else
+            {
+                AppendLsbPixelInfo(sb, "Оригинал", original, point);
+                sb.AppendLine();
+                AppendLsbPixelInfo(sb, "Стего-контейнер", stego, point);
+            }
+
+            textBox2.Text = sb.ToString().TrimEnd();
+        }
+
+        private void AppendLsbPixelInfo(StringBuilder sb, string title, Bitmap? bitmap, Point point)
+        {
+            sb.AppendLine(title + ":");
+            if (bitmap == null)
+            {
+                sb.AppendLine("Изображение не загружено.");
+                return;
+            }
+
+            if (point.X >= bitmap.Width || point.Y >= bitmap.Height)
+            {
+                sb.AppendLine("Для выбранного блока нет соответствующего пикселя.");
+                return;
+            }
+
+            Color pixel = bitmap.GetPixel(point.X, point.Y);
+            sb.AppendLine($"Пиксель ({point.X}, {point.Y})");
+            sb.AppendLine($"ARGB: ({pixel.A}, {pixel.R}, {pixel.G}, {pixel.B})");
+            sb.AppendLine($"R: {ToBinary(pixel.R)}");
+            sb.AppendLine($"G: {ToBinary(pixel.G)}");
+            sb.AppendLine($"B: {ToBinary(pixel.B)}");
+        }
+
+        private void AppendPvdPixelInfo(StringBuilder sb, string title, Bitmap? bitmap, Point point)
+        {
+            sb.AppendLine(title + ":");
+            if (bitmap == null)
+            {
+                sb.AppendLine("Изображение не загружено.");
+                return;
+            }
+
+            if (point.X >= bitmap.Width || point.Y >= bitmap.Height)
+            {
+                sb.AppendLine("Для выбранного блока нет соответствующей пары пикселей.");
+                return;
+            }
+
+            Color left = bitmap.GetPixel(point.X, point.Y);
+            sb.AppendLine($"Пиксель 1 ({point.X}, {point.Y})");
+            sb.AppendLine($"ARGB: ({left.A}, {left.R}, {left.G}, {left.B})");
+            sb.AppendLine($"R: {ToBinary(left.R)}");
+            sb.AppendLine($"G: {ToBinary(left.G)}");
+            sb.AppendLine($"B: {ToBinary(left.B)}");
+
+            if (point.X + 1 < bitmap.Width)
+            {
+                Color right = bitmap.GetPixel(point.X + 1, point.Y);
+                sb.AppendLine($"Пиксель 2 ({point.X + 1}, {point.Y})");
+                sb.AppendLine($"ARGB: ({right.A}, {right.R}, {right.G}, {right.B})");
+                sb.AppendLine($"R: {ToBinary(right.R)}");
+                sb.AppendLine($"G: {ToBinary(right.G)}");
+                sb.AppendLine($"B: {ToBinary(right.B)}");
+                sb.AppendLine($"|ΔR|={Math.Abs(left.R - right.R)}, |ΔG|={Math.Abs(left.G - right.G)}, |ΔB|={Math.Abs(left.B - right.B)}");
+            }
+            else
+            {
+                sb.AppendLine("Второй пиксель пары отсутствует.");
+            }
+        }
+
+        private static string ToBinary(byte value)
+        {
+            return Convert.ToString(value, 2).PadLeft(8, '0');
+        }
+
+
+
+
+
     }
 }

@@ -16,7 +16,8 @@ namespace VKR_1
         public FormInfo()
         {
             InitializeComponent();
-            OpenPdfFile("D:/NIR/VKR_1/VKR_1/info/PVD_inform.pdf");
+            string pdfPath = Path.Combine(Application.StartupPath, "info", "PVD_inform.pdf");
+            OpenPdfFile(pdfPath);
         }
 
         private void OpenPdfFile(string filePath)

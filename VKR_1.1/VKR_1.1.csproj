@@ -6,6 +6,8 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>VKR_1.1</AssemblyName>
+    <RootNamespace>VKR_1</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
