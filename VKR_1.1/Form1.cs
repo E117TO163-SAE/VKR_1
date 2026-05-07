@@ -1,6 +1,7 @@
-using NIRSteg_2;
-using System.Text;
+﻿using NIRSteg_2;
 using System.Drawing.Drawing2D;
+using System.IO.Pipelines;
+using System.Text;
 
 namespace VKR_1
 {
@@ -30,6 +31,7 @@ namespace VKR_1
 
         private bool _embed = true;
         private bool _decode = false;
+
         private bool _syncingAnalysisScroll = false;
 
         private const int DefaultAnalysisCellSize = 18;
@@ -47,6 +49,10 @@ namespace VKR_1
             LoadRangesToGrid();
             LoadRangesToAnalysisGrid();
             ConfigureAnalysisVisualizer();
+
+            checkedRGBInput.SetItemChecked(0, true);
+            checkedListBoxBitEmbed.SetItemChecked(0, true);
+
         }
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -54,29 +60,31 @@ namespace VKR_1
             {
                 _embed = true;
                 _decode = false;
+
+                checkedRGBInput.SetItemChecked(0, true);
+                checkedListBoxBitEmbed.SetItemChecked(0, true);
+
+
+
                 LoadRangesToGrid();
             }
             else if (tabControl1.SelectedTab == tabPage2)
             {
                 _embed = false;
                 _decode = true;
+
+                checkedListBoxDecode.SetItemChecked(0, true);
+                checkedListBoxBitDecode.SetItemChecked(0, true);
+
                 LoadRangesToGrid();
             }
             else if (tabControl1.SelectedTab == tabPage3)
             {
                 checkedListBoxRGBAnalysis.SetItemChecked(0, true);
+                checkedListBoxBitAnalysis.SetItemChecked(0, true);
+                checkedListBoxVisor.SetItemChecked(0, true);
 
-                for (int i = 0; i < checkedListBoxBitAnalysis.Items.Count; i++)
-                {
-                    checkedListBoxBitAnalysis.SetItemChecked(i, true);
-                }
 
-                if (tabControl4.SelectedTab == tabPage9)
-                {
-                    groupBox16.Text = "Оригинальное изображение";  
-                    groupBox15.Text = "Стегоизображение";
-                    RenderAnalysisVisualizer();
-                }
             }
         }
 
@@ -179,10 +187,9 @@ namespace VKR_1
                     "которые можно безопасно встроить без заметного искажения." + Environment.NewLine + Environment.NewLine +
                     "Процесс встраивания начинается с разделения изображения на блоки пикселей. Для каждого блока вычисляется " +
                     "разница между значениями соседних пикселей. В зависимости от величины этой разницы определяется, сколько бит " +
-                    "скрываемого сообщения можно встроить в эти пиксели: чем больше разница, тем больше бит можно встроить. " +
-                    "Затем эти биты встраиваются в младшие биты соответствующих пикселей. Извлечение сообщения происходит аналогично: " +
-                    "анализируются разницы между пикселями, определяется количество бит для извлечения, и из этих бит восстанавливается " +
-                    "исходное сообщение." + Environment.NewLine);
+                    "скрываемого сообщения можно встроить в эту разность: чем она больше, тем больше бит можно встроить. " +
+                    "Затем эти биты встраиваются посредством изменения значений пикселей, в зависимости от значения, которое принимает набор битов данных в десятичном виде. Извлечение сообщения происходит подобным образом: " +
+                    "анализируются разницы между пикселями, вычисляется скрытая часть из разности, и из этой разности вычисляется исходное сообщение." + Environment.NewLine);
 
                 checkedListBoxBitEmbed.Visible = false;
                 checkedListBoxBitEmbed.Enabled = false;
@@ -194,33 +201,46 @@ namespace VKR_1
 
         private void buttonEmbed_Click(object sender, EventArgs e)
         {
-            if (inputImagePath == null)
+            if (inputImagePath == null && _text && string.IsNullOrEmpty(textBoxForSecMess.Text))
             {
-                MessageBox.Show("Не выбрано изображение", "Ошибка",
-                                MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            if (_file && inputDataPath == null)
-            {
-                MessageBox.Show("Не выбран скрываемый файл", "Ошибка",
+                MessageBox.Show("Выберете изображение и задайте скрывемое сообщение.", "Ошибка",
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             if (_text && string.IsNullOrEmpty(textBoxForSecMess.Text))
             {
-                MessageBox.Show("Введите текст скрываемого сообщения", "Ошибка",
+                MessageBox.Show("Введите текст скрываемого сообщения.", "Ошибка",
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+            if (inputImagePath == null && _file && inputDataPath == null)
+            {
+                MessageBox.Show("Выберете изображение и скрываемый файл.", "Ошибка",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            if (inputImagePath == null)
+            {
+                MessageBox.Show("Выберете изображение.", "Ошибка",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            if (_file && inputDataPath == null)
+            {
+                MessageBox.Show("Выберете скрываемый файл.", "Ошибка",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             if (comboBoxStegInput.SelectedItem == null)
             {
-                MessageBox.Show("Выберите алгоритм стеганографии", "Ошибка",
+                MessageBox.Show("Выберите метод стеганографии.", "Ошибка",
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             if (_lsbEmbed && checkedRGBInput.CheckedItems.Count == 0)
             {
-                MessageBox.Show("Выберите хотя бы один цветовой канал", "Ошибка",
+                MessageBox.Show("Выберите хотя бы один цветовой канал.", "Ошибка",
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
@@ -236,7 +256,7 @@ namespace VKR_1
             }
             else
             {
-                MessageBox.Show("Нет данных для встраивания", "Ошибка",
+                MessageBox.Show("Нет данных для встраивания.", "Ошибка",
                                  MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
@@ -312,7 +332,7 @@ namespace VKR_1
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при встраивании: {ex.Message}\n\n{ex.StackTrace}",
+                MessageBox.Show($"Ошибка при встраивании: {ex.Message}.",
                                 "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
@@ -419,25 +439,21 @@ namespace VKR_1
 
 
                 textBoxLogDecode.Clear();
-                textBoxLogDecode.AppendText("Метод PVD (Pixel Value Differencing) основан на анализе разницы между " +
-                    "соседними пикселями изображения для определения количества бит, которые можно безопасно встроить без заметного искажения." + Environment.NewLine + Environment.NewLine +
-                    "Процесс встраивания начинается с разделения изображения на блоки пикселей. " +
-                    "Для каждого блока вычисляется разница между значениями соседних пикселей. В зависимости от величины этой " +
-                    "разницы определяется, сколько бит скрываемого сообщения можно встроить в эти пиксели: чем больше разница, " +
-                    "тем больше бит можно встроить. Затем эти биты встраиваются в младшие биты соответствующих пикселей. " +
-                    "Извлечение сообщения происходит аналогично: анализируются разницы между пикселями, определяется количество " + Environment.NewLine +
-                    "Суть классического метода PVD заключается в последовательной модификации значений яркости двух соседних пикселей P_i и P_(i+1), " +
-                    "для которых определяется абсолютная разность d_i = |P_i - P_(i+1)|, где d_i в диапазоне [0, 255]. На основании полученного значения d_i" +
-                    "в соответствии с таблицей диапазонов квантования определяются нижняя и верхняя границы [lower_i, upper_i] региона R_i и количество встраиваемых бит " +
-                    "t = floor[ log2(upper_i - lower_i + 1) ]. Последовательность бит сообщения длиной t преобразуется в десятичное значение t_d, после чего " +
-                    "вычисляется новое значение d'_i = t_d  + lower_i.");
+                textBoxLogInput.AppendText("Метод PVD (Pixel Value Differencing) основан на анализе разницы между соседними " +
+                    "пикселями изображения для определения количества бит, " +
+                    "которые можно безопасно встроить без заметного искажения." + Environment.NewLine + Environment.NewLine +
+                    "Процесс встраивания начинается с разделения изображения на блоки пикселей. Для каждого блока вычисляется " +
+                    "разница между значениями соседних пикселей. В зависимости от величины этой разницы определяется, сколько бит " +
+                    "скрываемого сообщения можно встроить в эту разность: чем она больше, тем больше бит можно встроить. " +
+                    "Затем эти биты встраиваются посредством изменения значений пикселей, в зависимости от значения, которое принимает набор битов данных в десятичном виде. Извлечение сообщения происходит подобным образом: " +
+                    "анализируются разницы между пикселями, вычисляется скрытая часть из разности, и из этой разности вычисляется исходное сообщение." + Environment.NewLine);
 
 
                 tableLayoutPanel3.Enabled = true;
                 tableLayoutPanel3.Visible = true;
 
-                checkedListBoxBitEmbed.Visible = false;
-                checkedListBoxBitEmbed.Enabled = false;
+                checkedListBoxBitDecode.Visible = false;
+                checkedListBoxBitDecode.Enabled = false;
 
             }
         }
@@ -459,21 +475,23 @@ namespace VKR_1
 
         private void buttonDecode_Click(object sender, EventArgs e)
         {
+
+
             if (string.IsNullOrEmpty(decodeImagePath))
             {
-                MessageBox.Show("Не выбрано изображение", "Ошибка",
+                MessageBox.Show("Выберете изображение.", "Ошибка",
                                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (string.IsNullOrEmpty(comboBoxStegInput.Text))
+            if (comboBoxDecode.Text != "LSB" && comboBoxDecode.Text != "PVD")
             {
-                MessageBox.Show("Выберите алгоритм стеганографии", "Ошибка",
+                MessageBox.Show("Выберите метод стеганографии.", "Ошибка",
                                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             if (_lsbDecode && checkedListBoxDecode.CheckedItems.Count == 0)
             {
-                MessageBox.Show("Выберите хотя бы один цветовой канал", "Ошибка",
+                MessageBox.Show("Выберите хотя бы один цветовой канал.", "Ошибка",
                                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
@@ -510,7 +528,7 @@ namespace VKR_1
                 if (text != null)
                 {
                     textBoxDecode.Text = "Извлечён текст: " + "\"" + text + "\"";
-                    textBoxLogDecode.AppendText(Environment.NewLine + "Извлечён текст: " + "\"" + text + "\"" + Environment.NewLine);
+                    //textBoxLogDecode.AppendText(Environment.NewLine + "Извлечён текст: " + "\"" + text + "\"" + Environment.NewLine);
                     buttonSaveDecode.Visible = false;
                     buttonSaveDecode.Enabled = false;
                 }
@@ -519,14 +537,14 @@ namespace VKR_1
                     buttonSaveDecode.Visible = true;
                     buttonSaveDecode.Enabled = true;
                     textBoxDecode.Text = "Извлечён файл: " + fileName;
-                    textBoxLogDecode.AppendText(Environment.NewLine + "Извлечён файл: " + fileName + Environment.NewLine);
+                    //textBoxLogDecode.AppendText(Environment.NewLine + "Извлечён файл: " + fileName + Environment.NewLine);
                     buttonSaveDecode.Tag = new Tuple<string, byte[]>(fileName, fileBytes);
                 }
 
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при извлечении: {ex.Message}\n\n{ex.StackTrace}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Ошибка при извлечении: Возможно вы выбрали неверные настройки либо контейнер пуст.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -538,6 +556,8 @@ namespace VKR_1
             SaveFileDialog sfd = new SaveFileDialog();
 
             sfd.FileName = tup.Item1;
+            string extension = "*" + Path.GetExtension(tup.Item1);
+            sfd.Filter = $"{extension}|*{extension}";
             if (sfd.ShowDialog() != DialogResult.OK) return;
 
             File.WriteAllBytes(sfd.FileName, tup.Item2);
@@ -856,6 +876,9 @@ namespace VKR_1
         //
         //
 
+        //
+        // Бит-план
+        //
         private void buttonConteinerAnalysis_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
@@ -867,9 +890,9 @@ namespace VKR_1
             textBoxConteinerAnalysis.Text = Path.GetFileName(analysisImagePath);
 
 
-            pictureBox4.Image = null;
-            pictureBox4.Image = Image.FromFile(ofd.FileName);
-            pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox3.Image = null;
+            pictureBox3.Image = Image.FromFile(ofd.FileName);
+            pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
 
 
             bitPlan();
@@ -879,11 +902,11 @@ namespace VKR_1
         {
             if (analysisPict == null)
             {
-                pictureBox3.Image = null;
+                pictureBox4.Image = null;
                 return;
             }
 
-            pictureBox3.Image = null;
+            pictureBox4.Image = null;
             bool useGrayscale = checkedListBoxRGBAnalysis.GetItemChecked(3);
             bool useRed = checkedListBoxRGBAnalysis.GetItemChecked(0);
             bool useGreen = checkedListBoxRGBAnalysis.GetItemChecked(1);
@@ -896,19 +919,44 @@ namespace VKR_1
             }
 
 
-            pictureBox3.Image = BitPlan.ApplyBitFilter(analysisPict, useGrayscale, useRed, useGreen, useBlue, selectedBits);
-            pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox4.Image = BitPlan.ApplyBitFilter(analysisPict, useGrayscale, useRed, useGreen, useBlue, selectedBits);
+            pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
         }
 
-
+        private bool isUpdating = false;
         private void checkedListBoxRGBAnalysis_ItemCheck(object sender, ItemCheckEventArgs e)
         {
+            if (isUpdating) return;
+
+            if (e.Index == 3 && e.NewValue == CheckState.Checked)
+            {
+                isUpdating = true;
+                for (int i = 0; i < checkedListBoxRGBAnalysis.Items.Count; i++)
+                {
+                    if (i != 3 && checkedListBoxRGBAnalysis.GetItemChecked(i))
+                    {
+                        checkedListBoxRGBAnalysis.SetItemChecked(i, false);
+                    }
+                }
+                isUpdating = false;
+            }
+            else if (e.Index <= 2 && e.NewValue == CheckState.Checked)
+            {
+                isUpdating = true;
+
+                if (checkedListBoxRGBAnalysis.GetItemChecked(3))
+                {
+                    checkedListBoxRGBAnalysis.SetItemChecked(3, false);
+                }
+                isUpdating = false;
+            }
             if (e.NewValue == CheckState.Unchecked)
             {
                 if (checkedListBoxRGBAnalysis.CheckedItems.Count == 1 && checkedListBoxRGBAnalysis.CheckedItems.Contains(checkedListBoxRGBAnalysis.Items[e.Index]))
                 {
                     e.NewValue = CheckState.Checked;
                 }
+
             }
         }
 
@@ -933,6 +981,9 @@ namespace VKR_1
             bitPlan();
         }
 
+        //
+        // Визуализатор
+        //
         private void ConfigureAnalysisVisualizer()
         {
             pictureBox3.SizeMode = PictureBoxSizeMode.Normal;
@@ -1017,8 +1068,8 @@ namespace VKR_1
         private void comboBoxMethod_SelectedIndexChanged(object? sender, EventArgs e)
         {
             bool isPvd = IsPvdAnalysisMode();
-            tableLayoutPanel5.Visible = isPvd;
-            tableLayoutPanel5.Enabled = isPvd;
+            //tableLayoutPanel5.Visible = isPvd;
+            //tableLayoutPanel5.Enabled = isPvd;
 
             ResetAnalysisSelection();
             RenderAnalysisVisualizer();
@@ -1034,6 +1085,9 @@ namespace VKR_1
         {
             if (tabControl4.SelectedTab == tabPage8)
             {
+                groupBox16.Text = "Изображение";
+                groupBox15.Text = "Бит-план изображения";
+
                 pictureBox3.Visible = true;
                 pictureBox4.Visible = true;
                 panel8.Invalidate();
@@ -1044,10 +1098,13 @@ namespace VKR_1
 
             if (tabControl4.SelectedTab == tabPage9)
             {
+                groupBox16.Text = "Оригинальное изображение";
+                groupBox15.Text = "Стегоизображение";
                 pictureBox3.Visible = false;
                 pictureBox4.Visible = false;
                 RenderAnalysisVisualizer();
             }
+
         }
 
         private void AnalysisPanel_MouseClick(object? sender, MouseEventArgs e)
@@ -1085,7 +1142,7 @@ namespace VKR_1
 
             _selectedAnalysisPoint = new Point(startX, pixelY);
             RenderAnalysisVisualizer();
-            UpdateAnalysisInfo();
+            UpdateAnalysisInfoRich();
         }
 
         private void AnalysisPanel_Paint(object? sender, PaintEventArgs e)
@@ -1175,7 +1232,7 @@ namespace VKR_1
 
             if (_selectedAnalysisPoint.HasValue)
             {
-                UpdateAnalysisInfo();
+                UpdateAnalysisInfoRich();
             }
         }
 
@@ -1321,7 +1378,7 @@ namespace VKR_1
 
             Color pixel = bitmap.GetPixel(point.X, point.Y);
             sb.AppendLine($"Пиксель ({point.X}, {point.Y})");
-            sb.AppendLine($"ARGB: ({pixel.A}, {pixel.R}, {pixel.G}, {pixel.B})");
+            sb.AppendLine($"RGB: ({pixel.R}, {pixel.G}, {pixel.B})");
             sb.AppendLine($"R: {ToBinary(pixel.R)}");
             sb.AppendLine($"G: {ToBinary(pixel.G)}");
             sb.AppendLine($"B: {ToBinary(pixel.B)}");
@@ -1344,7 +1401,7 @@ namespace VKR_1
 
             Color left = bitmap.GetPixel(point.X, point.Y);
             sb.AppendLine($"Пиксель 1 ({point.X}, {point.Y})");
-            sb.AppendLine($"ARGB: ({left.A}, {left.R}, {left.G}, {left.B})");
+            sb.AppendLine($"RGB: ({left.R}, {left.G}, {left.B})");
             sb.AppendLine($"R: {ToBinary(left.R)}");
             sb.AppendLine($"G: {ToBinary(left.G)}");
             sb.AppendLine($"B: {ToBinary(left.B)}");
@@ -1353,7 +1410,7 @@ namespace VKR_1
             {
                 Color right = bitmap.GetPixel(point.X + 1, point.Y);
                 sb.AppendLine($"Пиксель 2 ({point.X + 1}, {point.Y})");
-                sb.AppendLine($"ARGB: ({right.A}, {right.R}, {right.G}, {right.B})");
+                sb.AppendLine($"RGB: ({right.R}, {right.G}, {right.B})");
                 sb.AppendLine($"R: {ToBinary(right.R)}");
                 sb.AppendLine($"G: {ToBinary(right.G)}");
                 sb.AppendLine($"B: {ToBinary(right.B)}");
@@ -1365,14 +1422,265 @@ namespace VKR_1
             }
         }
 
+        private void UpdateAnalysisInfoRich()
+        {
+            if (!_selectedAnalysisPoint.HasValue)
+            {
+                textBox2.Clear();
+                return;
+            }
+
+            Bitmap? original = analysisOriginalBitmap;
+            Bitmap? stego = analysisStegoBitmap;
+            Point point = _selectedAnalysisPoint.Value;
+
+            textBox2.Clear();
+            textBox2.SelectionColor = textBox2.ForeColor;
+
+            AppendAnalysisTextLine($"Метод: {(IsPvdAnalysisMode() ? "PVD" : "LSB")}");
+            AppendAnalysisTextLine($"Координаты блока: X={point.X}, Y={point.Y}");
+            AppendAnalysisTextLine(string.Empty);
+
+            if (IsPvdAnalysisMode())
+            {
+                AppendPvdPixelInfoRich("Оригинал", original, point);
+                AppendAnalysisTextLine(string.Empty);
+                AppendPvdPixelInfoRich("Стего-контейнер", stego, point);
+            }
+            else
+            {
+                AppendLsbPixelInfoRich("Оригинал", original, point);
+                AppendAnalysisTextLine(string.Empty);
+                AppendLsbPixelInfoRich("Стего-контейнер", stego, point);
+            }
+        }
+
+        private void AppendLsbPixelInfoRich(string title, Bitmap? bitmap, Point point)
+        {
+            AppendAnalysisTextLine(title + ":");
+            if (bitmap == null)
+            {
+                AppendAnalysisTextLine("Изображение не загружено.");
+                return;
+            }
+
+            if (point.X >= bitmap.Width || point.Y >= bitmap.Height)
+            {
+                AppendAnalysisTextLine("Для выбранного блока нет соответствующей пары пикселей.");
+                return;
+            }
+
+            Color pixel = bitmap.GetPixel(point.X, point.Y);
+            AppendAnalysisTextLine($"Пиксель ({point.X}, {point.Y})");
+            AppendAnalysisTextLine($"RGB: ({pixel.R}, {pixel.G}, {pixel.B})");
+            AppendBinaryLine("R", pixel.R);
+            AppendBinaryLine("G", pixel.G);
+            AppendBinaryLine("B", pixel.B);
+        }
+
+        private void AppendPvdPixelInfoRich(string title, Bitmap? bitmap, Point point)
+        {
+            AppendAnalysisTextLine(title + ":");
+            if (bitmap == null)
+            {
+                AppendAnalysisTextLine("Изображение не загружено.");
+                return;
+            }
+
+            if (point.X >= bitmap.Width || point.Y >= bitmap.Height)
+            {
+                AppendAnalysisTextLine("Для выбранного блока нет соответствующей пары пикселей.");
+                return;
+            }
+
+            Color left = bitmap.GetPixel(point.X, point.Y);
+            AppendAnalysisTextLine($"Пиксель 1 ({point.X}, {point.Y})");
+            AppendAnalysisTextLine($"RGB: ({left.R}, {left.G}, {left.B})");
+            AppendBinaryLine("R", left.R);
+            AppendBinaryLine("G", left.G);
+            AppendBinaryLine("B", left.B);
+
+            if (point.X + 1 < bitmap.Width)
+            {
+                Color right = bitmap.GetPixel(point.X + 1, point.Y);
+                AppendAnalysisTextLine($"Пиксель 2 ({point.X + 1}, {point.Y})");
+                AppendAnalysisTextLine($"RGB: ({right.R}, {right.G}, {right.B})");
+                AppendBinaryLine("R", right.R);
+                AppendBinaryLine("G", right.G);
+                AppendBinaryLine("B", right.B);
+                AppendAnalysisTextLine($"|ΔR|={Math.Abs(left.R - right.R)}, |ΔG|={Math.Abs(left.G - right.G)}, |ΔB|={Math.Abs(left.B - right.B)}");
+            }
+            else
+            {
+                AppendAnalysisTextLine("Для выбранного блока нет соответствующей пары пикселей.");
+            }
+        }
+
+        private void AppendAnalysisTextLine(string text)
+        {
+            textBox2.SelectionColor = textBox2.ForeColor;
+            textBox2.AppendText(text + Environment.NewLine);
+        }
+
+        private void AppendBinaryLine(string channelName, byte value)
+        {
+            string bits = ToBinary(value);
+            HashSet<int> selectedBits = GetSelectedAnalysisBits();
+
+            textBox2.SelectionColor = textBox2.ForeColor;
+            textBox2.AppendText(channelName + ": ");
+
+            for (int charIndex = 0; charIndex < bits.Length; charIndex++)
+            {
+                int bitNumber = 7 - charIndex;
+                textBox2.SelectionColor = selectedBits.Contains(bitNumber) ? Color.Red : textBox2.ForeColor;
+                textBox2.AppendText(bits[charIndex].ToString());
+            }
+
+            textBox2.SelectionColor = textBox2.ForeColor;
+            textBox2.AppendText(Environment.NewLine);
+        }
+
+        private HashSet<int> GetSelectedAnalysisBits()
+        {
+            HashSet<int> result = new HashSet<int>();
+            foreach (var item in checkedListBoxVisor.CheckedItems)
+            {
+                if (int.TryParse(item?.ToString(), out int bitNumber))
+                {
+                    result.Add(bitNumber);
+                }
+            }
+
+            return result;
+        }
+
         private static string ToBinary(byte value)
         {
             return Convert.ToString(value, 2).PadLeft(8, '0');
         }
 
+        private void checkedListBoxVisor_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (tabControl4.SelectedTab == tabPage9)
+            {
+                UpdateAnalysisInfoRich();
+            }
+        }
 
+        private void tabPage8_Click(object sender, EventArgs e)
+        {
 
+        }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            int width = 1280;
+            int height = 1280;
 
+            //ЗАЛИВКА
+            // Создаём изображение с синим фоном
+            using (Bitmap bitmap = new Bitmap(width, height))
+            {
+                // Заливаем всё изображение синим цветом
+                using (Graphics g = Graphics.FromImage(bitmap))
+                {
+                    g.Clear(Color.Blue);
+                }
+
+                // Открываем диалог сохранения файла
+                using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+                {
+                    saveFileDialog.Filter = "PNG Image|*.png|JPEG Image|*.jpg|BMP Image|*.bmp";
+                    saveFileDialog.Title = "Сохранить изображение";
+                    saveFileDialog.FileName = "blue_image.png";
+
+                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        // Сохраняем изображение в выбранном формате
+                        bitmap.Save(saveFileDialog.FileName);
+                        MessageBox.Show("Изображение успешно сохранено!", "Успех",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
+
+            //ГРАДИЕНТ
+            using (Bitmap bitmap = new Bitmap(width, height))
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++)
+                    {
+                        // R зависит от X, G зависит от Y, B зависит от среднего
+                        int r = (int)(255 * ((float)x / width));
+                        int g = (int)(255 * ((float)y / height));
+                        int b = (int)(255 * (((float)x / width + (float)y / height) / 2));
+
+                        Color color = Color.FromArgb(r, g, b);
+                        bitmap.SetPixel(x, y, color);
+                    }
+                }
+                using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+                {
+                    saveFileDialog.Filter = "PNG Image|*.png|JPEG Image|*.jpg|BMP Image|*.bmp";
+                    saveFileDialog.Title = "Сохранить изображение";
+                    saveFileDialog.FileName = "blue_image.png";
+
+                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        // Сохраняем изображение в выбранном формате
+                        bitmap.Save(saveFileDialog.FileName);
+                        MessageBox.Show("Изображение успешно сохранено!", "Успех",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+
+            }
+        }
+
+        private void checkedRGBInput_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (e.NewValue == CheckState.Unchecked)
+            {
+                if (checkedRGBInput.CheckedItems.Count == 1 && checkedRGBInput.CheckedItems.Contains(checkedRGBInput.Items[e.Index]))
+                {
+                    e.NewValue = CheckState.Checked;
+                }
+            }
+        }
+
+        private void checkedListBoxBitEmbed_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (e.NewValue == CheckState.Unchecked)
+            {
+                if (checkedListBoxBitEmbed.CheckedItems.Count == 1 && checkedListBoxBitEmbed.CheckedItems.Contains(checkedListBoxBitEmbed.Items[e.Index]))
+                {
+                    e.NewValue = CheckState.Checked;
+                }
+            }
+        }
+
+        private void checkedListBoxDecode_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (e.NewValue == CheckState.Unchecked)
+            {
+                if (checkedListBoxDecode.CheckedItems.Count == 1 && checkedListBoxDecode.CheckedItems.Contains(checkedListBoxDecode.Items[e.Index]))
+                {
+                    e.NewValue = CheckState.Checked;
+                }
+            }
+        }
+
+        private void checkedListBoxBitDecode_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (e.NewValue == CheckState.Unchecked)
+            {
+                if (checkedListBoxBitDecode.CheckedItems.Count == 1 && checkedListBoxBitDecode.CheckedItems.Contains(checkedListBoxBitDecode.Items[e.Index]))
+                {
+                    e.NewValue = CheckState.Checked;
+                }
+            }
+        }
     }
 }

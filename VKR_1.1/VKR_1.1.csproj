@@ -11,8 +11,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="info\pdf_stego_method.pdf" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="PdfiumViewer.Native.x86_64.v8-xfa" Version="2018.4.8.256" />
     <PackageReference Include="PdfiumViewer.Updated" Version="2.14.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="info\pdf_stego_method.pdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>

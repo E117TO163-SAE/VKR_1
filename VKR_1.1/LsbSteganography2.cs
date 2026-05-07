@@ -6,10 +6,8 @@ namespace VKR_1
 {
     internal class LsbSteganography2
     {
-        // Новый метод с параметром selectedBits
         public static Bitmap EmbedData(Bitmap bmp, byte[] payload, bool _red, bool _green, bool _blue, List<int> selectedBits)
         {
-            // Валидация выбранных битов
             if (selectedBits == null || selectedBits.Count == 0)
                 throw new ArgumentException("Не выбрано ни одного бита для встраивания.");
 
@@ -22,13 +20,11 @@ namespace VKR_1
             Array.Copy(lengthPrefix, fullPayload, 4);
             Array.Copy(payload, 0, fullPayload, 4, payloadLength);
 
-            // Вычисляем количество используемых каналов
             int channelsUsed = 0;
             if (_red) channelsUsed++;
             if (_green) channelsUsed++;
             if (_blue) channelsUsed++;
 
-            // Общая ёмкость: пиксели * каналы * количество выбранных битов на канал
             int requiredBits = fullPayload.Length * 8;
             int capacity = bmp.Width * bmp.Height * channelsUsed * selectedBits.Count;
             if (requiredBits > capacity)
@@ -148,12 +144,10 @@ namespace VKR_1
             throw new Exception("Не удалось извлечь данные. Возможно, вы не верно выбрали цветовой(ые) канал(ы) или биты.");
         }
 
-        // Заменяет несколько битов в байте канала данными из payload
         private static byte EmbedBitsInChannel(byte channelValue, byte[] data, List<int> bitPositions, ref int byteIndex, ref int bitIndex, ref bool exhausted)
         {
             byte newValue = channelValue;
 
-            // Сортируем биты для предсказуемости (от младшего к старшему)
             foreach (int pos in bitPositions.OrderBy(b => b))
             {
                 if (byteIndex >= data.Length)
@@ -168,7 +162,6 @@ namespace VKR_1
             return newValue;
         }
 
-        // Установка конкретного бита (0-7) в байте
         private static byte SetSpecificBit(byte b, int position, int bitValue)
         {
             if (position < 0 || position > 7)

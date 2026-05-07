@@ -16,7 +16,7 @@ namespace VKR_1
         public FormInfo()
         {
             InitializeComponent();
-            string pdfPath = Path.Combine(Application.StartupPath, "info", "PVD_inform.pdf");
+            string pdfPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "info", "pdf_stego_method.pdf");
             OpenPdfFile(pdfPath);
         }
 

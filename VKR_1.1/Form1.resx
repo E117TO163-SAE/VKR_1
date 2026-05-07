@@ -129,6 +129,25 @@
   <metadata name="t.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <data name="dataGridView1.ToolTip" xml:space="preserve">
+    <value>Таблица диапазонов квантования (ТДК) для работы алгоритма PVD.
+
+"От" и "До" - это диапазон разности значений двух пикселей 
+(каждый цветовой канал отдельно).
+
+t - это количество бит, которое можно записать в разность 
+пикселей которая попала в диапазон.</value>
+  </data>
+  <data name="tableLayoutPanel1.ToolTip" xml:space="preserve">
+    <value>Таблица диапазонов квантования (ТДК) для работы алгоритма PVD.
+
+"От" и "До" - это диапазон разности значений двух пикселей 
+(каждый цветовой канал отдельно).
+
+t - это количество бит, которое можно записать в разность 
+пикселей которая попала в диапазон.
+</value>
+  </data>
   <metadata name="dataGridViewTextBoxColumn1.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -138,6 +157,16 @@
   <metadata name="dataGridViewTextBoxColumn3.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <data name="dataGridView2.ToolTip" xml:space="preserve">
+    <value>Тбалица диапазонов квантования (ТДК) для работы алгоритма PVD.
+
+"От" и "До" - это диапазон разности значений двух пикселей 
+(каждый цветовой канал отдельно).
+
+t - это количество бит, которое можно записать в разность 
+пикселей которая попала в диапазон.
+</value>
+  </data>
   <metadata name="dataGridViewTextBoxColumn4.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
