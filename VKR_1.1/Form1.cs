@@ -51,7 +51,7 @@ namespace VKR_1
             ConfigureAnalysisVisualizer();
 
             checkedRGBInput.SetItemChecked(0, true);
-            checkedListBoxBitEmbed.SetItemChecked(0, true);
+            CheckBitItemByLabel(checkedListBoxBitEmbed, 0);
 
         }
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
@@ -62,7 +62,7 @@ namespace VKR_1
                 _decode = false;
 
                 checkedRGBInput.SetItemChecked(0, true);
-                checkedListBoxBitEmbed.SetItemChecked(0, true);
+                CheckBitItemByLabel(checkedListBoxBitEmbed, 0);
 
 
 
@@ -74,15 +74,15 @@ namespace VKR_1
                 _decode = true;
 
                 checkedListBoxDecode.SetItemChecked(0, true);
-                checkedListBoxBitDecode.SetItemChecked(0, true);
+                CheckBitItemByLabel(checkedListBoxBitDecode, 0);
 
                 LoadRangesToGrid();
             }
             else if (tabControl1.SelectedTab == tabPage3)
             {
                 checkedListBoxRGBAnalysis.SetItemChecked(0, true);
-                checkedListBoxBitAnalysis.SetItemChecked(0, true);
-                checkedListBoxVisor.SetItemChecked(0, true);
+                CheckBitItemByLabel(checkedListBoxBitAnalysis, 0);
+                CheckBitItemByLabel(checkedListBoxVisor, 0);
 
 
             }
@@ -439,7 +439,7 @@ namespace VKR_1
 
 
                 textBoxLogDecode.Clear();
-                textBoxLogInput.AppendText("Метод PVD (Pixel Value Differencing) основан на анализе разницы между соседними " +
+                textBoxLogDecode.AppendText("Метод PVD (Pixel Value Differencing) основан на анализе разницы между соседними " +
                     "пикселями изображения для определения количества бит, " +
                     "которые можно безопасно встроить без заметного искажения." + Environment.NewLine + Environment.NewLine +
                     "Процесс встраивания начинается с разделения изображения на блоки пикселей. Для каждого блока вычисляется " +
@@ -912,11 +912,7 @@ namespace VKR_1
             bool useGreen = checkedListBoxRGBAnalysis.GetItemChecked(1);
             bool useBlue = checkedListBoxRGBAnalysis.GetItemChecked(2);
 
-            bool[] selectedBits = new bool[8];
-            for (int i = 0; i < 8; i++)
-            {
-                selectedBits[i] = checkedListBoxBitAnalysis.GetItemChecked(i);
-            }
+            bool[] selectedBits = GetSelectedBitsFromList(checkedListBoxBitAnalysis);
 
 
             pictureBox4.Image = BitPlan.ApplyBitFilter(analysisPict, useGrayscale, useRed, useGreen, useBlue, selectedBits);
@@ -924,6 +920,42 @@ namespace VKR_1
         }
 
         private bool isUpdating = false;
+
+        private bool[] GetSelectedBitsFromList(CheckedListBox listBox)
+        {
+            bool[] selectedBits = new bool[8];
+
+            for (int i = 0; i < listBox.Items.Count; i++)
+            {
+                if (TryParseBitNumber(listBox.Items[i], out int bitNumber) &&
+                    bitNumber >= 0 &&
+                    bitNumber < selectedBits.Length)
+                {
+                    selectedBits[bitNumber] = listBox.GetItemChecked(i);
+                }
+            }
+
+            return selectedBits;
+        }
+
+        private void CheckBitItemByLabel(CheckedListBox listBox, int bitNumber)
+        {
+            for (int i = 0; i < listBox.Items.Count; i++)
+            {
+                if (TryParseBitNumber(listBox.Items[i], out int currentBitNumber) &&
+                    currentBitNumber == bitNumber)
+                {
+                    listBox.SetItemChecked(i, true);
+                    return;
+                }
+            }
+        }
+
+        private bool TryParseBitNumber(object item, out int bitNumber)
+        {
+            return int.TryParse(item?.ToString(), out bitNumber);
+        }
+
         private void checkedListBoxRGBAnalysis_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             if (isUpdating) return;

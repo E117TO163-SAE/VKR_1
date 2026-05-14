@@ -546,7 +546,7 @@
             checkedListBoxBitEmbed.ColumnWidth = 60;
             checkedListBoxBitEmbed.Enabled = false;
             checkedListBoxBitEmbed.FormattingEnabled = true;
-            checkedListBoxBitEmbed.Items.AddRange(new object[] { "0", "1", "2", "3", "4", "5", "6", "7" });
+            checkedListBoxBitEmbed.Items.AddRange(new object[] { "7", "6", "5", "4", "3", "2", "1", "0" });
             checkedListBoxBitEmbed.Location = new Point(16, 167);
             checkedListBoxBitEmbed.MultiColumn = true;
             checkedListBoxBitEmbed.Name = "checkedListBoxBitEmbed";
@@ -863,7 +863,7 @@
             checkedListBoxBitDecode.ColumnWidth = 60;
             checkedListBoxBitDecode.Enabled = false;
             checkedListBoxBitDecode.FormattingEnabled = true;
-            checkedListBoxBitDecode.Items.AddRange(new object[] { "0", "1", "2", "3", "4", "5", "6", "7" });
+            checkedListBoxBitDecode.Items.AddRange(new object[] { "7", "6", "5", "4", "3", "2", "1", "0" });
             checkedListBoxBitDecode.Location = new Point(16, 167);
             checkedListBoxBitDecode.MultiColumn = true;
             checkedListBoxBitDecode.Name = "checkedListBoxBitDecode";
@@ -1188,7 +1188,7 @@
             checkedListBoxBitAnalysis.CheckOnClick = true;
             checkedListBoxBitAnalysis.ColumnWidth = 60;
             checkedListBoxBitAnalysis.FormattingEnabled = true;
-            checkedListBoxBitAnalysis.Items.AddRange(new object[] { "0", "1", "2", "3", "4", "5", "6", "7" });
+            checkedListBoxBitAnalysis.Items.AddRange(new object[] { "7", "6", "5", "4", "3", "2", "1", "0" });
             checkedListBoxBitAnalysis.Location = new Point(3, 247);
             checkedListBoxBitAnalysis.MultiColumn = true;
             checkedListBoxBitAnalysis.Name = "checkedListBoxBitAnalysis";
@@ -1263,7 +1263,7 @@
             checkedListBoxVisor.CheckOnClick = true;
             checkedListBoxVisor.ColumnWidth = 60;
             checkedListBoxVisor.FormattingEnabled = true;
-            checkedListBoxVisor.Items.AddRange(new object[] { "0", "1", "2", "3", "4", "5", "6", "7" });
+            checkedListBoxVisor.Items.AddRange(new object[] { "7", "6", "5", "4", "3", "2", "1", "0" });
             checkedListBoxVisor.Location = new Point(3, 318);
             checkedListBoxVisor.MultiColumn = true;
             checkedListBoxVisor.Name = "checkedListBoxVisor";
@@ -1493,7 +1493,7 @@
             ClientSize = new Size(1899, 1023);
             Controls.Add(tabControl1);
             Name = "Form1";
-            Text = "SudyingStego";
+            Text = "StudyingStego";
             tabControl1.ResumeLayout(false);
             tabPage1.ResumeLayout(false);
             groupBox13.ResumeLayout(false);
