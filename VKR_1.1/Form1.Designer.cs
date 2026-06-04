@@ -1100,7 +1100,7 @@
             groupBox15.Size = new Size(676, 528);
             groupBox15.TabIndex = 14;
             groupBox15.TabStop = false;
-            groupBox15.Text = "Бит-план изображения";
+            groupBox15.Text = "Срез изображения";
             // 
             // panel8
             // 
@@ -1179,7 +1179,7 @@
             tabPage8.Padding = new Padding(3);
             tabPage8.Size = new Size(500, 363);
             tabPage8.TabIndex = 0;
-            tabPage8.Text = "Бит-план";
+            tabPage8.Text = "Битовый срез";
             tabPage8.UseVisualStyleBackColor = true;
             tabPage8.Click += tabPage8_Click;
             // 
