@@ -46,6 +46,9 @@
             panel7 = new Panel();
             pictureBox1 = new PictureBox();
             groupBox3 = new GroupBox();
+            label6 = new Label();
+            label5 = new Label();
+            label4 = new Label();
             panel10 = new Panel();
             checkedRGBInput = new CheckedListBox();
             tableLayoutPanel1 = new TableLayoutPanel();
@@ -88,7 +91,10 @@
             textBoxConteinerDecode = new TextBox();
             buttonConteinerDecode = new Button();
             groupBox7 = new GroupBox();
+            label7 = new Label();
+            label8 = new Label();
             checkedListBoxBitDecode = new CheckedListBox();
+            label9 = new Label();
             tableLayoutPanel3 = new TableLayoutPanel();
             panel3 = new Panel();
             buttonDown1 = new Button();
@@ -117,12 +123,15 @@
             groupBox11 = new GroupBox();
             tabControl4 = new TabControl();
             tabPage8 = new TabPage();
+            label11 = new Label();
             checkedListBoxBitAnalysis = new CheckedListBox();
             checkedListBoxRGBAnalysis = new CheckedListBox();
+            label12 = new Label();
             groupBox12 = new GroupBox();
             textBoxConteinerAnalysis = new TextBox();
             buttonConteinerAnalysis = new Button();
             tabPage9 = new TabPage();
+            label10 = new Label();
             checkedListBoxVisor = new CheckedListBox();
             groupBox19 = new GroupBox();
             textBox3 = new TextBox();
@@ -241,7 +250,7 @@
             groupBox13.Size = new Size(1327, 438);
             groupBox13.TabIndex = 13;
             groupBox13.TabStop = false;
-            groupBox13.Text = "Информация";
+            groupBox13.Text = "Справочная нформация";
             // 
             // tableLayoutPanel4
             // 
@@ -281,7 +290,7 @@
             // 
             // buttonEmbed
             // 
-            buttonEmbed.Location = new Point(69, 780);
+            buttonEmbed.Location = new Point(69, 798);
             buttonEmbed.Name = "buttonEmbed";
             buttonEmbed.Size = new Size(411, 50);
             buttonEmbed.TabIndex = 0;
@@ -368,21 +377,56 @@
             // 
             // groupBox3
             // 
+            groupBox3.Controls.Add(label6);
+            groupBox3.Controls.Add(label5);
+            groupBox3.Controls.Add(label4);
             groupBox3.Controls.Add(panel10);
             groupBox3.Controls.Add(tableLayoutPanel1);
             groupBox3.Controls.Add(checkedListBoxBitEmbed);
             groupBox3.Controls.Add(comboBoxStegInput);
             groupBox3.Location = new Point(11, 468);
             groupBox3.Name = "groupBox3";
-            groupBox3.Size = new Size(537, 307);
+            groupBox3.Size = new Size(537, 321);
             groupBox3.TabIndex = 9;
             groupBox3.TabStop = false;
             groupBox3.Text = "Выбрать параметры встраивания";
             // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new Point(168, 27);
+            label6.Name = "label6";
+            label6.Size = new Size(295, 25);
+            label6.TabIndex = 18;
+            label6.Text = "Таблица диапазонов квантования:";
+            toolTip1.SetToolTip(label6, resources.GetString("label6.ToolTip"));
+            label6.Visible = false;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(16, 209);
+            label5.Name = "label5";
+            label5.Size = new Size(116, 25);
+            label5.TabIndex = 17;
+            label5.Text = "Биты канала:";
+            toolTip1.SetToolTip(label5, "Выбор бита цветового канала,\r\nв который будет записываться\r\nинформация.");
+            label5.Visible = false;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(16, 74);
+            label4.Name = "label4";
+            label4.Size = new Size(148, 25);
+            label4.TabIndex = 16;
+            label4.Text = "Цветовой канал:";
+            toolTip1.SetToolTip(label4, "Выбор цветового канала,\r\nв который будет записываться\r\nинформация.");
+            // 
             // panel10
             // 
             panel10.Controls.Add(checkedRGBInput);
-            panel10.Location = new Point(16, 72);
+            panel10.Location = new Point(16, 102);
             panel10.Name = "panel10";
             panel10.Size = new Size(69, 88);
             panel10.TabIndex = 15;
@@ -410,7 +454,7 @@
             tableLayoutPanel1.Controls.Add(dataGridView1, 0, 0);
             tableLayoutPanel1.Controls.Add(panel1, 0, 1);
             tableLayoutPanel1.Enabled = false;
-            tableLayoutPanel1.Location = new Point(169, 33);
+            tableLayoutPanel1.Location = new Point(170, 52);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 2;
             tableLayoutPanel1.RowStyles.Add(new RowStyle());
@@ -547,7 +591,7 @@
             checkedListBoxBitEmbed.Enabled = false;
             checkedListBoxBitEmbed.FormattingEnabled = true;
             checkedListBoxBitEmbed.Items.AddRange(new object[] { "7", "6", "5", "4", "3", "2", "1", "0" });
-            checkedListBoxBitEmbed.Location = new Point(16, 167);
+            checkedListBoxBitEmbed.Location = new Point(16, 237);
             checkedListBoxBitEmbed.MultiColumn = true;
             checkedListBoxBitEmbed.Name = "checkedListBoxBitEmbed";
             checkedListBoxBitEmbed.Size = new Size(495, 32);
@@ -716,7 +760,7 @@
             groupBox14.Size = new Size(1314, 397);
             groupBox14.TabIndex = 15;
             groupBox14.TabStop = false;
-            groupBox14.Text = "Информация";
+            groupBox14.Text = "Справочная нформация";
             // 
             // button3
             // 
@@ -738,7 +782,7 @@
             // 
             // buttonDecode
             // 
-            buttonDecode.Location = new Point(76, 437);
+            buttonDecode.Location = new Point(76, 460);
             buttonDecode.Name = "buttonDecode";
             buttonDecode.Size = new Size(399, 50);
             buttonDecode.TabIndex = 14;
@@ -846,16 +890,41 @@
             // 
             // groupBox7
             // 
+            groupBox7.Controls.Add(label7);
+            groupBox7.Controls.Add(label8);
             groupBox7.Controls.Add(checkedListBoxBitDecode);
+            groupBox7.Controls.Add(label9);
             groupBox7.Controls.Add(tableLayoutPanel3);
             groupBox7.Controls.Add(checkedListBoxDecode);
             groupBox7.Controls.Add(comboBoxDecode);
             groupBox7.Location = new Point(6, 125);
             groupBox7.Name = "groupBox7";
-            groupBox7.Size = new Size(537, 307);
+            groupBox7.Size = new Size(537, 329);
             groupBox7.TabIndex = 10;
             groupBox7.TabStop = false;
             groupBox7.Text = "Выбрать используемые параметры встраивания";
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Location = new Point(170, 27);
+            label7.Name = "label7";
+            label7.Size = new Size(295, 25);
+            label7.TabIndex = 21;
+            label7.Text = "Таблица диапазонов квантования:";
+            toolTip1.SetToolTip(label7, resources.GetString("label7.ToolTip"));
+            label7.Visible = false;
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Location = new Point(18, 209);
+            label8.Name = "label8";
+            label8.Size = new Size(116, 25);
+            label8.TabIndex = 20;
+            label8.Text = "Биты канала:";
+            toolTip1.SetToolTip(label8, "Выбор бита цветового канала,\r\nиз которого будет извлечена\r\nинформация.");
+            label8.Visible = false;
             // 
             // checkedListBoxBitDecode
             // 
@@ -864,7 +933,7 @@
             checkedListBoxBitDecode.Enabled = false;
             checkedListBoxBitDecode.FormattingEnabled = true;
             checkedListBoxBitDecode.Items.AddRange(new object[] { "7", "6", "5", "4", "3", "2", "1", "0" });
-            checkedListBoxBitDecode.Location = new Point(16, 167);
+            checkedListBoxBitDecode.Location = new Point(16, 237);
             checkedListBoxBitDecode.MultiColumn = true;
             checkedListBoxBitDecode.Name = "checkedListBoxBitDecode";
             checkedListBoxBitDecode.Size = new Size(495, 32);
@@ -872,6 +941,16 @@
             toolTip1.SetToolTip(checkedListBoxBitDecode, "Выбор бита(ов) в который будет\r\nзаписано сообщение.\r\n");
             checkedListBoxBitDecode.Visible = false;
             checkedListBoxBitDecode.ItemCheck += checkedListBoxBitDecode_ItemCheck;
+            // 
+            // label9
+            // 
+            label9.AutoSize = true;
+            label9.Location = new Point(18, 74);
+            label9.Name = "label9";
+            label9.Size = new Size(148, 25);
+            label9.TabIndex = 19;
+            label9.Text = "Цветовой канал:";
+            toolTip1.SetToolTip(label9, "Выбор цветового канала,\r\nиз которого будет извлечена\r\nинформация.");
             // 
             // tableLayoutPanel3
             // 
@@ -882,13 +961,14 @@
             tableLayoutPanel3.Controls.Add(dataGridView2, 0, 0);
             tableLayoutPanel3.Controls.Add(panel4, 0, 1);
             tableLayoutPanel3.Enabled = false;
-            tableLayoutPanel3.Location = new Point(170, 33);
+            tableLayoutPanel3.Location = new Point(170, 56);
             tableLayoutPanel3.Name = "tableLayoutPanel3";
             tableLayoutPanel3.RowCount = 2;
             tableLayoutPanel3.RowStyles.Add(new RowStyle());
             tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tableLayoutPanel3.Size = new Size(361, 267);
             tableLayoutPanel3.TabIndex = 7;
+            toolTip1.SetToolTip(tableLayoutPanel3, resources.GetString("tableLayoutPanel3.ToolTip"));
             tableLayoutPanel3.Visible = false;
             // 
             // panel3
@@ -1013,7 +1093,7 @@
             checkedListBoxDecode.CheckOnClick = true;
             checkedListBoxDecode.FormattingEnabled = true;
             checkedListBoxDecode.Items.AddRange(new object[] { "R", "G", "B" });
-            checkedListBoxDecode.Location = new Point(16, 72);
+            checkedListBoxDecode.Location = new Point(18, 102);
             checkedListBoxDecode.Name = "checkedListBoxDecode";
             checkedListBoxDecode.Size = new Size(63, 88);
             checkedListBoxDecode.TabIndex = 1;
@@ -1153,7 +1233,7 @@
             groupBox11.Controls.Add(tabControl4);
             groupBox11.Location = new Point(3, 3);
             groupBox11.Name = "groupBox11";
-            groupBox11.Size = new Size(514, 431);
+            groupBox11.Size = new Size(514, 445);
             groupBox11.TabIndex = 2;
             groupBox11.TabStop = false;
             groupBox11.Text = "Визуализация";
@@ -1166,22 +1246,34 @@
             tabControl4.Location = new Point(3, 27);
             tabControl4.Name = "tabControl4";
             tabControl4.SelectedIndex = 0;
-            tabControl4.Size = new Size(508, 401);
+            tabControl4.Size = new Size(508, 415);
             tabControl4.TabIndex = 0;
             // 
             // tabPage8
             // 
+            tabPage8.Controls.Add(label11);
             tabPage8.Controls.Add(checkedListBoxBitAnalysis);
             tabPage8.Controls.Add(checkedListBoxRGBAnalysis);
+            tabPage8.Controls.Add(label12);
             tabPage8.Controls.Add(groupBox12);
             tabPage8.Location = new Point(4, 34);
             tabPage8.Name = "tabPage8";
             tabPage8.Padding = new Padding(3);
-            tabPage8.Size = new Size(500, 363);
+            tabPage8.Size = new Size(500, 377);
             tabPage8.TabIndex = 0;
             tabPage8.Text = "Битовый срез";
             tabPage8.UseVisualStyleBackColor = true;
             tabPage8.Click += tabPage8_Click;
+            // 
+            // label11
+            // 
+            label11.AutoSize = true;
+            label11.Location = new Point(3, 287);
+            label11.Name = "label11";
+            label11.Size = new Size(126, 25);
+            label11.TabIndex = 20;
+            label11.Text = "Бит для среза:";
+            toolTip1.SetToolTip(label11, "Выбор бита цветового канала,\r\nпо которому будет осуществлён\r\nбитовый срез изображения.");
             // 
             // checkedListBoxBitAnalysis
             // 
@@ -1189,10 +1281,10 @@
             checkedListBoxBitAnalysis.ColumnWidth = 60;
             checkedListBoxBitAnalysis.FormattingEnabled = true;
             checkedListBoxBitAnalysis.Items.AddRange(new object[] { "7", "6", "5", "4", "3", "2", "1", "0" });
-            checkedListBoxBitAnalysis.Location = new Point(3, 247);
+            checkedListBoxBitAnalysis.Location = new Point(3, 315);
             checkedListBoxBitAnalysis.MultiColumn = true;
             checkedListBoxBitAnalysis.Name = "checkedListBoxBitAnalysis";
-            checkedListBoxBitAnalysis.Size = new Size(495, 32);
+            checkedListBoxBitAnalysis.Size = new Size(491, 32);
             checkedListBoxBitAnalysis.TabIndex = 14;
             toolTip1.SetToolTip(checkedListBoxBitAnalysis, "Выбор бита(ов) которые будут\r\nотрисовываться на бит-план.\r\n");
             checkedListBoxBitAnalysis.ItemCheck += checkedListBoxBitAnalysis_ItemCheck;
@@ -1203,13 +1295,23 @@
             checkedListBoxRGBAnalysis.CheckOnClick = true;
             checkedListBoxRGBAnalysis.FormattingEnabled = true;
             checkedListBoxRGBAnalysis.Items.AddRange(new object[] { "R", "G", "B", "Gray" });
-            checkedListBoxRGBAnalysis.Location = new Point(3, 125);
+            checkedListBoxRGBAnalysis.Location = new Point(3, 168);
             checkedListBoxRGBAnalysis.Name = "checkedListBoxRGBAnalysis";
             checkedListBoxRGBAnalysis.Size = new Size(75, 116);
             checkedListBoxRGBAnalysis.TabIndex = 1;
             toolTip1.SetToolTip(checkedListBoxRGBAnalysis, "Выбор цветового канала,\r\nкоторый будет отрисовываться\r\nна бит-план.\r\n\r\nЛибо Gray для отображения\r\nоттенков серого.");
             checkedListBoxRGBAnalysis.ItemCheck += checkedListBoxRGBAnalysis_ItemCheck;
             checkedListBoxRGBAnalysis.SelectedIndexChanged += checkedListBoxRGBAnalysis_SelectedIndexChanged;
+            // 
+            // label12
+            // 
+            label12.AutoSize = true;
+            label12.Location = new Point(0, 140);
+            label12.Name = "label12";
+            label12.Size = new Size(148, 25);
+            label12.TabIndex = 19;
+            label12.Text = "Цветовой канал:";
+            toolTip1.SetToolTip(label12, "Выбор цветового канала,\r\nпо которому будет осуществлён\r\nбитовый срез изображения.");
             // 
             // groupBox12
             // 
@@ -1244,6 +1346,7 @@
             // 
             // tabPage9
             // 
+            tabPage9.Controls.Add(label10);
             tabPage9.Controls.Add(checkedListBoxVisor);
             tabPage9.Controls.Add(groupBox19);
             tabPage9.Controls.Add(groupBox18);
@@ -1253,10 +1356,20 @@
             tabPage9.Location = new Point(4, 34);
             tabPage9.Name = "tabPage9";
             tabPage9.Padding = new Padding(3);
-            tabPage9.Size = new Size(500, 363);
+            tabPage9.Size = new Size(500, 377);
             tabPage9.TabIndex = 1;
             tabPage9.Text = "Визор";
             tabPage9.UseVisualStyleBackColor = true;
+            // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.Location = new Point(7, 314);
+            label10.Name = "label10";
+            label10.Size = new Size(198, 25);
+            label10.TabIndex = 18;
+            label10.Text = "Подсвечивание битов:";
+            toolTip1.SetToolTip(label10, "Выбор битов, которые необходимо подсветить.");
             // 
             // checkedListBoxVisor
             // 
@@ -1264,7 +1377,7 @@
             checkedListBoxVisor.ColumnWidth = 60;
             checkedListBoxVisor.FormattingEnabled = true;
             checkedListBoxVisor.Items.AddRange(new object[] { "7", "6", "5", "4", "3", "2", "1", "0" });
-            checkedListBoxVisor.Location = new Point(3, 318);
+            checkedListBoxVisor.Location = new Point(5, 340);
             checkedListBoxVisor.MultiColumn = true;
             checkedListBoxVisor.Name = "checkedListBoxVisor";
             checkedListBoxVisor.Size = new Size(495, 32);
@@ -1347,16 +1460,16 @@
             label3.AutoSize = true;
             label3.Location = new Point(7, 247);
             label3.Name = "label3";
-            label3.Size = new Size(154, 25);
+            label3.Size = new Size(158, 25);
             label3.TabIndex = 15;
-            label3.Text = "Масштаб пикселя";
+            label3.Text = "Масштаб пикселя:";
             // 
             // comboBoxMethod
             // 
             comboBoxMethod.AllowDrop = true;
             comboBoxMethod.FormattingEnabled = true;
             comboBoxMethod.Items.AddRange(new object[] { "LSB", "PVD" });
-            comboBoxMethod.Location = new Point(7, 280);
+            comboBoxMethod.Location = new Point(7, 275);
             comboBoxMethod.Name = "comboBoxMethod";
             comboBoxMethod.Size = new Size(69, 33);
             comboBoxMethod.TabIndex = 2;
@@ -1507,6 +1620,7 @@
             panel7.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             groupBox3.ResumeLayout(false);
+            groupBox3.PerformLayout();
             panel10.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
             panel2.ResumeLayout(false);
@@ -1531,6 +1645,7 @@
             groupBox8.ResumeLayout(false);
             groupBox8.PerformLayout();
             groupBox7.ResumeLayout(false);
+            groupBox7.PerformLayout();
             tableLayoutPanel3.ResumeLayout(false);
             panel3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dataGridView2).EndInit();
@@ -1547,6 +1662,7 @@
             groupBox11.ResumeLayout(false);
             tabControl4.ResumeLayout(false);
             tabPage8.ResumeLayout(false);
+            tabPage8.PerformLayout();
             groupBox12.ResumeLayout(false);
             groupBox12.PerformLayout();
             tabPage9.ResumeLayout(false);
@@ -1683,5 +1799,14 @@
         private DataGridViewTextBoxColumn U;
         private DataGridViewTextBoxColumn t;
         private Button button1;
+        private Label label4;
+        private Label label6;
+        private Label label5;
+        private Label label7;
+        private Label label8;
+        private Label label9;
+        private Label label11;
+        private Label label12;
+        private Label label10;
     }
 }

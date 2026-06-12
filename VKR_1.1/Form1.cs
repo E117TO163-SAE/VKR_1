@@ -171,9 +171,12 @@ namespace VKR_1
 
                 tableLayoutPanel1.Enabled = false;
                 tableLayoutPanel1.Visible = false;
+                label6.Visible = false;
 
                 checkedListBoxBitEmbed.Visible = true;
                 checkedListBoxBitEmbed.Enabled = true;
+                
+                label5.Visible = true;
 
             }
             else if (comboBoxStegInput.Text == "PVD")
@@ -193,9 +196,12 @@ namespace VKR_1
 
                 checkedListBoxBitEmbed.Visible = false;
                 checkedListBoxBitEmbed.Enabled = false;
+                
+                label5.Visible = false;
 
                 tableLayoutPanel1.Enabled = true;
                 tableLayoutPanel1.Visible = true;
+                label6.Visible = true;
             }
         }
 
@@ -427,9 +433,11 @@ namespace VKR_1
 
                 tableLayoutPanel3.Enabled = false;
                 tableLayoutPanel3.Visible = false;
+                label7.Visible = false;
 
                 checkedListBoxBitDecode.Visible = true;
                 checkedListBoxBitDecode.Enabled = true;
+                label8.Visible = true;
 
             }
             else if (comboBoxDecode.Text == "PVD")
@@ -451,9 +459,12 @@ namespace VKR_1
 
                 tableLayoutPanel3.Enabled = true;
                 tableLayoutPanel3.Visible = true;
+                label7.Visible = true;
+
 
                 checkedListBoxBitDecode.Visible = false;
                 checkedListBoxBitDecode.Enabled = false;
+                label8.Visible = false;
 
             }
         }
@@ -1714,5 +1725,7 @@ namespace VKR_1
                 }
             }
         }
+
+
     }
 }
